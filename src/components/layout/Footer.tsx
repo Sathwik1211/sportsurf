@@ -1,0 +1,107 @@
+import Link from "next/link";
+import { Instagram, Linkedin, Twitter, MapPin, Phone, Mail } from "lucide-react";
+
+const categories = [
+  "Surface sports",
+  "Water sports",
+  "Small sports",
+  "Budget sports",
+  "Sports academies",
+  "Play zones",
+  "Adventure sports games",
+  "Challenge courses",
+  "Talent scout clubs",
+];
+
+export default function Footer() {
+  return (
+    <footer className="bg-ag-primary text-white pt-12 pb-6 border-t border-white/10">
+      <div className="container-retail">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+          {/* Brand Col */}
+          <div className="space-y-4">
+            <Link href="/" className="flex items-center gap-2.5">
+              <div className="w-8 h-8 bg-ag-gold flex items-center justify-center">
+                <span className="font-heading font-bold text-white text-sm italic">S</span>
+              </div>
+              <div>
+                <span className="font-heading font-bold text-white text-lg tracking-tighter block leading-none">SPORTSURF</span>
+                <span className="text-[9px] font-body text-white/50 tracking-[0.2em] uppercase">India</span>
+              </div>
+            </Link>
+            <p className="font-body text-white/60 text-sm leading-relaxed max-w-xs">
+              India's leading sports infrastructure company — building arenas for sport, play, and excellence.
+            </p>
+            <div className="flex items-center gap-3">
+              {[Instagram, Linkedin, Twitter].map((Icon, i) => (
+                <a key={i} href="#" className="w-8 h-8 border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-ag-gold transition-all">
+                  <Icon size={15} />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="font-body text-[10px] uppercase tracking-[0.3em] text-white/40 mb-4">Quick Links</h4>
+            <ul className="space-y-2.5">
+              {["Home", "Products", "Projects", "About", "Contact"].map((item) => (
+                <li key={item}>
+                  <Link href={item === "Home" ? "/" : `/${item.toLowerCase()}`} className="font-body text-sm text-white/60 hover:text-ag-gold transition-colors">
+                    {item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Categories */}
+          <div>
+            <h4 className="font-body text-[10px] uppercase tracking-[0.3em] text-white/40 mb-4">Categories</h4>
+            <ul className="space-y-2">
+              {categories.map((cat) => (
+                <li key={cat}>
+                  <Link href={`/products?category=${cat.toLowerCase().replace(/\s+/g, "-")}`} className="font-body text-xs text-white/60 hover:text-ag-gold transition-colors">
+                    {cat}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 className="font-body text-[10px] uppercase tracking-[0.3em] text-white/40 mb-4">Contact Us</h4>
+            <ul className="space-y-3">
+              <li className="flex gap-3">
+                <MapPin className="text-ag-gold shrink-0 mt-0.5" size={15} />
+                <span className="font-body text-white/60 text-xs leading-relaxed">
+                  Sports Arena Complex,<br />Cyber City, Gurgaon,<br />Haryana – 122002
+                </span>
+              </li>
+              <li className="flex gap-3 items-center">
+                <Phone className="text-ag-gold shrink-0" size={15} />
+                <span className="font-body text-white/60 text-xs">+91 (800) SPORTSURF</span>
+              </li>
+              <li className="flex gap-3 items-center">
+                <Mail className="text-ag-gold shrink-0" size={15} />
+                <span className="font-body text-white/60 text-xs">mission@sportsurf.in</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-3">
+          <p className="font-body text-xs text-white/40">
+            &copy; {new Date().getFullYear()} SportSurf India. All rights reserved.
+          </p>
+          <div className="flex gap-6">
+            <Link href="/privacy" className="font-body text-xs text-white/40 hover:text-ag-gold uppercase tracking-wider">Privacy Policy</Link>
+            <Link href="/terms" className="font-body text-xs text-white/40 hover:text-ag-gold uppercase tracking-wider">Terms of Service</Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}

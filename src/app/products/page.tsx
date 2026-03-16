@@ -1,0 +1,219 @@
+'use client';
+
+import React, { useState, useMemo, useEffect, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { products, categories } from '@/data/products';
+import ProductCard from '@/components/ui/ProductCard';
+import { ChevronRight, Filter, X } from 'lucide-react';
+import Link from 'next/link';
+
+function ProductsContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const categoryParam = searchParams.get('category');
+  
+  const [activeCategory, setActiveCategory] = useState(categoryParam || 'all');
+  const [activeSport, setActiveSport] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (categoryParam) {
+      setActiveCategory(categoryParam);
+      setActiveSport('all'); // Reset sport when category changes via nav
+    } else {
+      setActiveCategory('all');
+      setActiveSport('all');
+    }
+  }, [categoryParam]);
+
+  const currentCategoryLabel = useMemo(() => {
+    if (activeCategory === 'all') return 'All Categories';
+    const cat = categories.find(c => c.id === activeCategory);
+    return cat ? cat.label : 'Category';
+  }, [activeCategory]);
+
+  const sportsInCategory = useMemo(() => {
+    if (activeCategory === 'all') return [];
+    const catProducts = products.filter(p => p.category === activeCategory);
+    // Unique list of product names as sports
+    const uniqueSports = Array.from(new Set(catProducts.map(p => p.name)));
+    return uniqueSports;
+  }, [activeCategory]);
+
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
+      const matchesCategory = activeCategory === 'all' || product.category === activeCategory;
+      const matchesSport = activeSport === 'all' || product.name === activeSport;
+      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            product.description.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCategory && matchesSport && matchesSearch;
+    });
+  }, [activeCategory, activeSport, searchQuery]);
+
+  return (
+    <div className="min-h-screen bg-ag-bg pt-52 pb-20">
+      <div className="container-retail">
+        {/* Breadcrumb / Top Bar */}
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-xs font-body text-ag-text-muted mb-4 tracking-wider uppercase">
+            <Link href="/" className="hover:text-ag-primary transition-colors">Home</Link>
+            <ChevronRight size={12} />
+            <Link href="/products" className="hover:text-ag-primary transition-colors">Products</Link>
+            {activeCategory !== 'all' && (
+              <>
+                <ChevronRight size={12} />
+                <span className="text-ag-primary font-semibold">{currentCategoryLabel}</span>
+              </>
+            )}
+            {activeSport !== 'all' && (
+                <>
+                <ChevronRight size={12} />
+                <span className="text-ag-primary font-semibold">{activeSport}</span>
+                </>
+            )}
+          </div>
+          
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-heading font-black text-ag-text mb-2 tracking-tighter uppercase">
+                {activeSport !== 'all' ? activeSport : (activeCategory === 'all' ? 'All Products' : currentCategoryLabel)}
+              </h1>
+              <p className="text-ag-text-muted max-w-2xl text-sm font-body">
+                Discover our range of premium sports infrastructure and equipment tailored for {activeCategory === 'all' ? 'all sports' : currentCategoryLabel.toLowerCase()}.
+              </p>
+            </div>
+            
+            <button 
+              className="md:hidden flex items-center gap-2 text-ag-text bg-white px-4 py-2 border border-ag-border rounded font-body text-sm self-start"
+              onClick={() => setIsSidebarOpen(true)}
+            >
+              <Filter size={16} /> Filters
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Sidebar */}
+          <div className={`
+            fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-ag-border p-6 transform transition-transform duration-300 ease-in-out
+            lg:relative lg:translate-x-0 lg:w-auto lg:p-0 lg:bg-transparent lg:border-none lg:z-0
+            ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          `}>
+            <div className="flex items-center justify-between lg:hidden mb-6">
+              <h3 className="font-heading font-bold text-lg text-ag-text">Filters</h3>
+              <button onClick={() => setIsSidebarOpen(false)} className="text-ag-text-muted">
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-10 sticky top-40">
+              <div className="space-y-4">
+                <h3 className="font-body font-extrabold text-xs uppercase tracking-widest text-ag-text pb-2 border-b border-ag-border">
+                   {activeCategory === 'all' ? 'All Products' : currentCategoryLabel}
+                </h3>
+                
+                {activeCategory !== 'all' ? (
+                  <div className="flex flex-col gap-1 mt-4">
+                    <button
+                      onClick={() => setActiveSport('all')}
+                      className={`text-left text-sm py-2 px-3 rounded transition-colors ${activeSport === 'all' ? 'bg-ag-bg-alt text-ag-primary font-bold border-l-2 border-ag-primary' : 'text-ag-text-muted hover:bg-ag-bg-alt/50 hover:text-ag-text'}`}
+                    >
+                      Show All {currentCategoryLabel}
+                    </button>
+                    {sportsInCategory.map(sport => (
+                      <button
+                        key={sport}
+                        onClick={() => setActiveSport(sport)}
+                        className={`text-left text-sm py-2 px-3 rounded transition-colors ${activeSport === sport ? 'bg-ag-bg-alt text-ag-primary font-bold border-l-2 border-ag-primary' : 'text-ag-text-muted hover:bg-ag-bg-alt/50 hover:text-ag-text'}`}
+                      >
+                        {sport}
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                    <div className="text-sm text-ag-text-muted mt-4">
+                        Please select a category from the top navigation to view specific sports.
+                    </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="lg:col-span-3">
+            {/* Header / Search */}
+            <div className="bg-white border border-ag-border p-4 mb-6 flex items-center justify-between">
+              <div className="text-sm text-ag-text-muted font-body">
+                Showing <span className="font-bold text-ag-text">{filteredProducts.length}</span> products
+              </div>
+              <div className="flex gap-2 relative">
+                  <input 
+                      type="text" 
+                      placeholder="Search within..." 
+                      className="border border-ag-border px-3 py-1.5 text-sm font-body outline-none focus:border-ag-primary w-48 transition-colors"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  {searchQuery && (
+                      <button onClick={() => setSearchQuery('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-ag-text-muted hover:text-ag-text">
+                          <X size={14} />
+                      </button>
+                  )}
+              </div>
+            </div>
+
+            {/* Product Grid */}
+            {filteredProducts.length > 0 ? (
+              <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+                {filteredProducts.map((product) => (
+                  <div key={product.id} className="break-inside-avoid">
+                    <ProductCard 
+                      name={product.name}
+                      category={product.category}
+                      shortSpec={product.shortSpec}
+                      slug={product.slug}
+                      image={product.images && product.images.length > 0 ? product.images[0] : undefined}
+                      heightClass={product.heightClass}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white border border-ag-border border-dashed p-12 text-center">
+                <h3 className="text-xl font-heading font-bold text-ag-text mb-2">No products found</h3>
+                <p className="text-ag-text-muted font-body mb-6">Try adjusting your filters or search query.</p>
+                <button 
+                  onClick={() => {
+                    setActiveCategory('all');
+                    setActiveSport('all');
+                    setSearchQuery('');
+                  }}
+                  className="btn btn-gold px-6 py-2 text-sm"
+                >
+                  Clear All Filters
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+export default function ProductsPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-ag-bg flex items-center justify-center pt-32"><div className="w-8 h-8 rounded-full border-2 border-ag-primary border-t-transparent animate-spin"></div></div>}>
+            <ProductsContent />
+        </Suspense>
+    )
+}

@@ -1,0 +1,32 @@
+export const projects = [
+  {
+    id: "1",
+    name: "Delhi Public School Sports Complex",
+    city: "New Delhi",
+    state: "Delhi",
+    surface: "Synthetic Turf",
+    area: "8,400 sqm",
+    year: "2023",
+    image: "/images/project_1.png",
+  },
+  {
+    id: "2",
+    name: "St. Xavier's International Arena",
+    city: "Mumbai",
+    state: "Maharashtra",
+    surface: "Running Track",
+    area: "4,200 sqm",
+    year: "2022",
+    image: "/images/project_2.png",
+  },
+  {
+    id: "3",
+    name: "Lalit Modi Stadium Refurbishment",
+    city: "Bangalore",
+    state: "Karnataka",
+    surface: "Multi-Sport Flooring",
+    area: "12,000 sqm",
+    year: "2024",
+    image: "/images/indian_urban_turf.png",
+  },
+];
