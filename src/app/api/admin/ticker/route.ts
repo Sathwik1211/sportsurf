@@ -13,8 +13,12 @@ async function checkAdmin() {
 }
 
 export async function GET() {
-  const items = await prisma.tickerUpdate.findMany({ orderBy: { order: "asc" } });
-  return NextResponse.json(items);
+  try {
+    const items = await prisma.tickerUpdate.findMany({ orderBy: { order: "asc" } });
+    return NextResponse.json(items);
+  } catch {
+    return NextResponse.json([]);
+  }
 }
 
 export async function POST(req: Request) {

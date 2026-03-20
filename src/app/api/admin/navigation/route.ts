@@ -12,8 +12,12 @@ async function checkAdmin() {
 
 // GET all nav items
 export async function GET() {
-  const items = await prisma.navigationItem.findMany({ orderBy: { order: "asc" } });
-  return NextResponse.json(items);
+  try {
+    const items = await prisma.navigationItem.findMany({ orderBy: { order: "asc" } });
+    return NextResponse.json(items);
+  } catch {
+    return NextResponse.json([]);
+  }
 }
 
 // POST new nav item

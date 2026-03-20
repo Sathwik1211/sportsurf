@@ -11,8 +11,12 @@ async function checkAdmin() {
 }
 
 export async function GET() {
-  const categories = await prisma.category.findMany({ orderBy: { order: "asc" } });
-  return NextResponse.json(categories);
+  try {
+    const categories = await prisma.category.findMany({ orderBy: { order: "asc" } });
+    return NextResponse.json(categories);
+  } catch {
+    return NextResponse.json([]);
+  }
 }
 
 export async function POST(req: Request) {
