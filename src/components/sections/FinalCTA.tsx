@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { MessageCircle, PhoneCall, Clock } from "lucide-react";
 
-export default function FinalCTA({ settings }: { settings: any }) {
+export default function FinalCTA({ settings }: { settings?: any }) {
   return (
     <section className="py-10 md:py-16 bg-ag-primary border-t border-ag-border relative overflow-hidden">
       <div className="container-retail relative z-10">
