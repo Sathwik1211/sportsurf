@@ -88,7 +88,7 @@ export default function Navbar() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [settings, setSettings] = useState<any>(null);
   const [navLinks, setNavLinks] = useState<{ label: string; href: string }[]>([]);
-  const [categories, setCategories] = useState<{ label: string; imageUrl?: string; icon?: string; iconSvg?: string; navbarIconUrl?: string; showOnNavbar?: boolean; href?: string }[]>([]);
+  const [categories, setCategories] = useState<{ id?: string; label: string; imageUrl?: string; icon?: string; iconSvg?: string; navbarIconUrl?: string; showOnNavbar?: boolean; href?: string }[]>([]);
   const [tickerItems, setTickerItems] = useState<{ text: string }[]>([]);
   const pathname = usePathname();
 
@@ -239,7 +239,7 @@ export default function Navbar() {
                {categories.map((cat, i) => (
                 <Link
                   key={cat.label}
-                  href={cat.href || `/products?category=${cat.id || cat.label.toLowerCase().replace(/\s+/g, "-")}`}
+                  href={cat.href || `/products?category=${(cat as any).id || cat.label.toLowerCase().replace(/\s+/g, "-")}`}
                   className="group flex flex-col items-center gap-1.5 px-4 py-2 min-w-fit hover:bg-ag-bg-alt transition-all duration-200 relative"
                 >
                   <div className="text-ag-text-muted group-hover:text-ag-primary transition-colors">
@@ -309,7 +309,7 @@ export default function Navbar() {
             {(!settings || settings.showCategoryBar) && (
               <div className="pt-3 grid grid-cols-3 gap-3">
                 {categories.map((cat) => (
-                  <Link key={cat.label} href={cat.href || `/products?category=${cat.id || cat.label.toLowerCase().replace(/\s+/g, "-")}`}
+                  <Link key={cat.label} href={cat.href || `/products?category=${(cat as any).id || cat.label.toLowerCase().replace(/\s+/g, "-")}`}
                     className="flex flex-col items-center gap-1 p-2 bg-ag-bg-alt rounded text-ag-text-muted hover:text-ag-primary text-center"
                     onClick={() => setIsMenuOpen(false)}
                   >
