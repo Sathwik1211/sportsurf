@@ -1,7 +1,5 @@
-"use client";
-
-import { useMemo, useState } from "react";
-import { products } from "@/data/products";
+import { prisma } from "@/lib/prisma";
+import { notFound } from "next/navigation";
 import {
    ChevronRight,
    CheckCircle2,
@@ -20,30 +18,25 @@ import {
 import Link from "next/link";
 import FinalCTA from "@/components/sections/FinalCTA";
 import FeaturedProjects from "@/components/sections/FeaturedProjects";
+import ProductGallery from "@/components/sections/ProductGallery";
 
-export default function ProductDetailPage({ params }: { params: { slug: string } }) {
-   const product = useMemo(() => {
-      return products.find((p) => p.slug === params.slug);
-   }, [params.slug]);
+export const dynamic = "force-dynamic";
 
-   // Gallery state
-   const [activeImageIndex, setActiveImageIndex] = useState(0);
-
-   const galleryImages = [
-      (product as any)?.images?.[0] || "/images/sports/premium_sports_hero.png",
-      "/images/basketball_court.png",
-      "/images/indian_complex_detail.png",
-      "/images/turf_texture.png",
-      "/images/sports/play_zones.png",
-      "/images/sports/adventure_sports.png"
-   ];
+export default async function ProductDetailPage({ params }: { params: { slug: string } }) {
+   const product = await prisma.product.findUnique({
+      where: { slug: params.slug }
+   });
 
    if (!product) {
-      return (
-         <div className="min-h-screen flex items-center justify-center bg-ag-bg">
-            <h1 className="text-ag-text font-heading text-3xl font-bold">Product Not Found</h1>
-         </div>
-      );
+      notFound();
+   }
+
+   // Parse specs if stored as stringified JSON
+   let specs: { label: string; value: string }[] = [];
+   try {
+      specs = JSON.parse(product.specs || "[]");
+   } catch {
+      specs = [];
    }
 
    return (
@@ -65,36 +58,11 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
          <div className="container-retail mb-10">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20">
 
-               {/* LEFT SIDE: Image Gallery */}
-               <div className="flex flex-col gap-4">
-                  {/* Main Featured Image */}
-                  <div className="w-full aspect-[4/3] bg-ag-bg-alt rounded-2xl overflow-hidden shadow-lg border border-ag-border relative">
-                     <div className="absolute top-4 left-4 z-10 px-3 py-1 bg-ag-primary text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-md">
-                        Premium Grade
-                     </div>
-                     <img
-                        src={galleryImages[activeImageIndex]}
-                        className="w-full h-full object-cover transition-opacity duration-500"
-                        alt={product.name}
-                     />
-                  </div>
-
-                  {/* Thumbnails Underneath */}
-                  <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar px-1">
-                     {galleryImages.map((img, idx) => (
-                        <button
-                           key={idx}
-                           onClick={() => setActiveImageIndex(idx)}
-                           className={`shrink-0 w-24 h-24 rounded-lg overflow-hidden border-2 transition-all ${activeImageIndex === idx
-                                 ? 'border-ag-primary shadow-md ring-4 ring-ag-primary/20 scale-95'
-                                 : 'border-transparent hover:border-ag-border opacity-70 hover:opacity-100 hover:scale-105'
-                              }`}
-                        >
-                           <img src={img} className="w-full h-full object-cover" alt="Thumbnail" />
-                        </button>
-                     ))}
-                  </div>
-               </div>
+               {/* LEFT SIDE: Image Gallery (Client Component) */}
+               <ProductGallery 
+                  images={product.imageUrl ? [product.imageUrl] : []} 
+                  productName={product.name} 
+               />
 
                {/* RIGHT SIDE: Product Intro & Quick Actions */}
                <div className="flex flex-col justify-center">
@@ -190,8 +158,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                            <Ruler className="text-ag-primary" /> Dimensions & Specs
                         </h3>
                         <div className="space-y-0 border border-ag-border/60 rounded-xl overflow-hidden bg-white">
-                           {product.specs.map((spec, index) => (
-                              <div key={spec.label} className={`flex ${index !== product.specs.length - 1 ? 'border-b border-ag-border/60' : ''}`}>
+                           {specs.length > 0 ? specs.map((spec, index) => (
+                              <div key={spec.label} className={`flex ${index !== specs.length - 1 ? 'border-b border-ag-border/60' : ''}`}>
                                  <div className="w-2/5 p-4 bg-gray-50/50 font-bold text-sm text-ag-text border-r border-ag-border/60">
                                     {spec.label}
                                  </div>
@@ -199,7 +167,9 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                                     {spec.value}
                                  </div>
                               </div>
-                           ))}
+                           )) : (
+                              <div className="p-4 text-sm text-ag-text-muted italic">Specs are updated periodically for this model.</div>
+                           )}
                         </div>
                      </div>
 
@@ -244,7 +214,10 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                   ].map((service, idx) => (
                      <div key={idx} className="bg-white p-8 rounded-2xl border border-ag-border hover:border-ag-primary hover:shadow-2xl transition-all duration-300 group">
                         <div className="w-14 h-14 bg-ag-bg-alt rounded-full flex items-center justify-center text-ag-primary mb-6 group-hover:bg-ag-primary group-hover:text-white transition-colors duration-300">
-                           <service.icon size={26} />
+                           <div className="text-ag-primary group-hover:text-white">
+                              {/* Using the component directly as it's a Server Component rendering standard SVG icons via Lucide */}
+                              <service.icon size={26} />
+                           </div>
                         </div>
                         <h3 className="text-xl font-bold font-heading text-ag-text mb-3">{service.title}</h3>
                         <p className="text-ag-text-muted text-sm leading-relaxed">{service.desc}</p>

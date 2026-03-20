@@ -66,9 +66,9 @@ model SiteSettings {
   secondaryColor  String @default("#f59e0b")
   fontHeading     String @default("Inter")
   fontBody        String @default("Inter")
-  contactEmail    String?
-  contactPhone    String?
-  address         String?
+  contactEmail    String? // Display email for website
+  contactPhone    String? // Display phone for website
+  address         String? // Headquarters address
   showCategoryBar Boolean @default(true)
   showTicker      Boolean @default(true)
   statsJson       String? @default("[]") // Array of { value, label }
@@ -77,6 +77,18 @@ model SiteSettings {
   ctaSubtitle     String? @default("Contact us to get a complete guide & quote.")
   ctaButton       String? @default("GET A QUOTE")
   ctaLink         String? @default("/contact")
+
+  // About Page Content
+  aboutText         String? @default("Founded in 2013, SportSurf was born from a singular vision: to bring world-class athletic infrastructure to India.")
+  aboutOriginTitle  String? @default("THE ORIGIN")
+  aboutOriginText   String? @default("Today, \"Antigravity\" represents our next evolution — a commitment to physics-driven design that minimizes injury risk and maximizes performance potential.")
+  valuesJson        String? @default("[]") // [{title, icon, text}]
+  timelineJson      String? @default("[]") // [{year, title, text}]
+
+  // Contact Page Specifics
+  officeHours       String? @default("Mon - Sat: 9:00 AM - 7:00 PM")
+  whatsappNumber    String? @default("+91800SPORTSURF")
+  serviceArea       String? @default("Pan India Service Availability")
 }
 
 model TickerUpdate {

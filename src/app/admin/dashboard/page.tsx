@@ -5,11 +5,11 @@ import {
   LayoutDashboard, Package, Briefcase, Star, Users, Settings,
   Map, Image as ImageIcon, LogOut, Plus, Pencil, Trash2, X, Save,
   ChevronDown, ChevronUp, Search, CheckCircle, AlertCircle, Eye,
-  Palette, Type, Link2, Megaphone, Shield
+  Palette, Type, Link2, Megaphone, Shield, Phone
 } from "lucide-react";
 
 // ---------- types ----------
-type Tab = "overview" | "hero" | "navigation" | "categories" | "homepage" | "products" | "projects" | "testimonials" | "users" | "settings" | "ticker";
+type Tab = "overview" | "hero" | "navigation" | "categories" | "homepage" | "products" | "projects" | "testimonials" | "users" | "settings" | "ticker" | "pages";
 
 interface StatsData { userCount: number; productCount: number; projectCount: number; testimonialCount: number }
 interface HeroItem { id: string; page: string; title: string; subtitle?: string; imageUrl?: string; ctaText?: string; ctaLink?: string; textColor: string; overlayOpacity: number }
@@ -18,7 +18,34 @@ interface ProductItem { id: string; slug: string; name: string; category: string
 interface ProjectItem { id: string; name: string; city: string; state: string; surface: string; area: string; year: string; imageUrl?: string }
 interface TestimonialItem { id: string; name: string; institution: string; quote: string; avatar?: string }
 interface UserItem { id: string; name?: string; email?: string; role: string; emailVerified?: string }
-interface SiteSettings { siteName: string; primaryColor: string; secondaryColor: string; fontHeading: string; fontBody: string; contactEmail?: string; contactPhone?: string; address?: string; logoUrl?: string; showCategoryBar?: boolean; showTicker?: boolean; statsJson?: string; certsJson?: string; ctaTitle?: string; ctaSubtitle?: string; ctaButton?: string; ctaLink?: string }
+interface SiteSettings { 
+  siteName: string; 
+  primaryColor: string; 
+  secondaryColor: string; 
+  fontHeading: string; 
+  fontBody: string; 
+  contactEmail?: string; 
+  contactPhone?: string; 
+  address?: string; 
+  logoUrl?: string; 
+  showCategoryBar?: boolean; 
+  showTicker?: boolean; 
+  statsJson?: string; 
+  certsJson?: string; 
+  ctaTitle?: string; 
+  ctaSubtitle?: string; 
+  ctaButton?: string; 
+  ctaLink?: string;
+  // New Page Content Fields
+  aboutText?: string;
+  aboutOriginTitle?: string;
+  aboutOriginText?: string;
+  valuesJson?: string;
+  timelineJson?: string;
+  officeHours?: string;
+  whatsappNumber?: string;
+  serviceArea?: string;
+}
 
 // ---------- helpers ----------
 function Toast({ msg, type }: { msg: string; type: "success" | "error" }) {
@@ -383,6 +410,7 @@ export default function AdminDashboard() {
     { key: "testimonials", label: "Testimonials", icon: <Star size={16} /> },
     { key: "users", label: "Users", icon: <Users size={16} /> },
     { key: "ticker", label: "Announcement Ticker", icon: <Megaphone size={16} /> },
+    { key: "pages", label: "Page Content", icon: <Pencil size={16} /> },
     { key: "settings", label: "Site Settings", icon: <Settings size={16} /> },
   ];
 
@@ -859,6 +887,47 @@ export default function AdminDashboard() {
               <button onClick={saveSettings} className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition">
                 <Save size={16} /> Save Settings
               </button>
+            </div>
+          </div>
+        )}
+        {tab === "pages" && (
+          <div>
+            <h2 className="text-2xl font-black text-slate-800 mb-6">About & Contact Page Content</h2>
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-8 max-w-4xl space-y-10">
+              
+              {/* About Page */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center gap-2">
+                  <Star className="text-amber-500" size={18} /> About Page: Hero & Story
+                </h3>
+                <Field label="Hero Story Text" name="aboutText" value={settings.aboutText || ""} onChange={e => setSettings(s => ({ ...s, aboutText: e.target.value }))} textarea />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Field label="Origin Section Title" name="aboutOriginTitle" value={settings.aboutOriginTitle || ""} onChange={e => setSettings(s => ({ ...s, aboutOriginTitle: e.target.value }))} />
+                  <Field label="Origin Section Description" name="aboutOriginText" value={settings.aboutOriginText || ""} onChange={e => setSettings(s => ({ ...s, aboutOriginText: e.target.value }))} textarea />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                  <Field label="Values Cards (JSON: title, icon, text)" name="valuesJson" value={settings.valuesJson || "[]"} onChange={e => setSettings(s => ({ ...s, valuesJson: e.target.value }))} textarea />
+                  <Field label="History Timeline (JSON: year, title, text)" name="timelineJson" value={settings.timelineJson || "[]"} onChange={e => setSettings(s => ({ ...s, timelineJson: e.target.value }))} textarea />
+                </div>
+              </div>
+
+              {/* Contact Page */}
+              <div className="space-y-6 pt-4 border-t border-slate-100">
+                <h3 className="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center gap-2">
+                  <Phone className="text-amber-500" size={18} /> Contact Page: Details
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Field label="Office Hours" name="officeHours" value={settings.officeHours || ""} onChange={e => setSettings(s => ({ ...s, officeHours: e.target.value }))} />
+                  <Field label="WhatsApp Number" name="whatsappNumber" value={settings.whatsappNumber || ""} onChange={e => setSettings(s => ({ ...s, whatsappNumber: e.target.value }))} />
+                  <Field label="Service Coverage Area" name="serviceArea" value={settings.serviceArea || ""} onChange={e => setSettings(s => ({ ...s, serviceArea: e.target.value }))} />
+                </div>
+              </div>
+
+              <div className="pt-6">
+                <button onClick={saveSettings} className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-white px-8 py-3 rounded-xl text-sm font-bold transition shadow-lg shadow-amber-500/20">
+                  <Save size={18} /> Update Page Content
+                </button>
+              </div>
             </div>
           </div>
         )}
