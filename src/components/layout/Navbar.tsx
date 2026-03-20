@@ -1,13 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search, ShoppingBag, User, Menu, X, ChevronRight, Mail, Phone, Facebook, Twitter, Youtube, Instagram, Linkedin } from "lucide-react";
 
-// Flat SVG icons for each category
-const CategoryIcon = ({ name }: { name: string }) => {
-  const iconClass = "w-8 h-8";
+// Flat SVG icons for each category...
+const CategoryIcon = ({ name, iconSvg, imageUrl }: { name: string; iconSvg?: string; imageUrl?: string }) => {
+  const iconClass = "w-8 h-8 object-contain";
+
+  if (iconSvg) {
+    return <div className={iconClass} dangerouslySetInnerHTML={{ __html: iconSvg }} />;
+  }
+
+  if (imageUrl) {
+    return <img src={imageUrl} alt={name} className={iconClass} onError={e => e.currentTarget.style.display="none"} />;
+  }
+
   const icons: Record<string, JSX.Element> = {
     "Surface sports": (
       <svg viewBox="0 0 24 24" fill="none" className={iconClass} stroke="currentColor" strokeWidth={1.5}>
@@ -72,29 +81,52 @@ const CategoryIcon = ({ name }: { name: string }) => {
   return icons[name] || <svg viewBox="0 0 24 24" className={iconClass} fill="none" stroke="currentColor" strokeWidth={1.5}><circle cx="12" cy="12" r="10" /></svg>;
 };
 
-const categories = [
-  "Surface sports",
-  "Water sports",
-  "Small sports",
-  "Budget sports",
-  "Sports academies",
-  "Play zones",
-  "Adventure sports games",
-  "Challenge courses",
-  "Talent scout clubs",
-];
 
-const navLinks = [
-  { name: "Products", href: "/products" },
-  { name: "Projects", href: "/projects" },
-  { name: "About Us", href: "/about" },
-  { name: "Contact", href: "/contact" },
-];
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
+  const [settings, setSettings] = useState<any>(null);
+  const [navLinks, setNavLinks] = useState<{ label: string; href: string }[]>([]);
+  const [categories, setCategories] = useState<{ label: string; imageUrl?: string; icon?: string; iconSvg?: string; navbarIconUrl?: string; showOnNavbar?: boolean; href?: string }[]>([]);
+  const [tickerItems, setTickerItems] = useState<{ text: string }[]>([]);
   const pathname = usePathname();
+
+  useEffect(() => {
+    fetch("/api/admin/settings")
+      .then(res => res.ok ? res.json() : null)
+      .then(data => setSettings(data))
+      .catch(console.error);
+
+    fetch("/api/admin/navigation")
+      .then(res => res.ok ? res.json() : [])
+      .then(data => setNavLinks(data.length ? data : [
+        { label: "Products", href: "/products" },
+        { label: "Projects", href: "/projects" },
+        { label: "About Us", href: "/about" },
+        { label: "Contact", href: "/contact" }
+      ]))
+      .catch(console.error);
+
+    fetch("/api/admin/categories")
+      .then(res => res.ok ? res.json() : [])
+      .then(data => setCategories(data.length ? data : [
+        { label: "Surface sports" }, { label: "Water sports" }, { label: "Small sports" }, { label: "Budget sports" },
+        { label: "Sports academies" }, { label: "Play zones" }, { label: "Adventure sports games" },
+        { label: "Challenge courses" }, { label: "Talent scout clubs" }
+      ]))
+      .catch(console.error);
+
+    fetch("/api/admin/ticker")
+      .then(res => res.ok ? res.json() : [])
+      .then(data => setTickerItems(data.length ? data : [
+        { text: "Free site visit & consultation across India" },
+        { text: "ISO 9001:2015 Certified" },
+        { text: "FLAT 10% OFF on first project" },
+        { text: "Premium Sports Surfaces & Equipment" }
+      ]))
+      .catch(console.error);
+  }, []);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-ag-bg border-b border-ag-border">
@@ -167,14 +199,14 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-6 ml-auto">
             {navLinks.map((link) => (
               <Link
-                key={link.name}
+                key={link.label}
                 href={link.href}
                 className={`text-sm font-body transition-colors ${pathname === link.href
                     ? "text-ag-primary font-semibold"
                     : "text-ag-text-muted hover:text-ag-text"
                   }`}
               >
-                {link.name}
+                {link.label}
               </Link>
             ))}
             <div className="h-4 w-px bg-ag-border" />
@@ -200,70 +232,64 @@ export default function Navbar() {
       </div>
 
       {/* Category Icon Strip */}
-      <div className="hidden md:block bg-white border-b border-ag-border">
-        <div className="container-retail">
-          <div className="flex items-center justify-between py-3 overflow-x-auto scrollbar-hide gap-2">
-            {categories.map((cat, i) => (
-              <Link
-                key={cat}
-                href={`/products?category=${cat.toLowerCase().replace(/\s+/g, "-")}`}
-                className="group flex flex-col items-center gap-1.5 px-4 py-2 min-w-fit hover:bg-ag-bg-alt transition-all duration-200 relative"
-              >
-                <div className="text-ag-text-muted group-hover:text-ag-primary transition-colors">
-                  <CategoryIcon name={cat} />
-                </div>
-                <span className="text-[11px] font-body text-ag-text-muted group-hover:text-ag-primary transition-colors whitespace-nowrap tracking-wide">{cat}</span>
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-ag-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-200" />
-              </Link>
-            ))}
+      {(!settings || settings.showCategoryBar) && (
+        <div className="hidden md:block bg-white border-b border-ag-border">
+          <div className="container-retail">
+            <div className="flex items-center justify-between py-3 overflow-x-auto scrollbar-hide gap-2">
+               {categories.map((cat, i) => (
+                <Link
+                  key={cat.label}
+                  href={cat.href || `/products?category=${cat.id || cat.label.toLowerCase().replace(/\s+/g, "-")}`}
+                  className="group flex flex-col items-center gap-1.5 px-4 py-2 min-w-fit hover:bg-ag-bg-alt transition-all duration-200 relative"
+                >
+                  <div className="text-ag-text-muted group-hover:text-ag-primary transition-colors">
+                    <CategoryIcon name={cat.label} iconSvg={cat.iconSvg} />
+                  </div>
+                  <span className="text-[11px] font-body text-ag-text-muted group-hover:text-ag-primary transition-colors whitespace-nowrap tracking-wide">{cat.label}</span>
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-ag-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-200" />
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Ticker / Announcement */}
-      <div className="hidden md:flex bg-ag-primary text-white items-center h-10 overflow-hidden border-t-[3px] border-ag-gold w-full">
-        {/* "LATEST UPDATES" Label with Chevron cutout */}
-        <div className="relative bg-[#F4F5F7] text-ag-primary font-bold text-xs uppercase px-4 h-full flex items-center shrink-0 z-10 w-[200px]">
-          <div className="flex items-center gap-2">
-            {/* Target Icon */}
-            <div className="border-[2px] border-ag-primary rounded-full p-[1px]">
-              <div className="w-1.5 h-1.5 bg-ag-primary rounded-full"></div>
-            </div>
-            LATEST UPDATES
-          </div>
-          {/* Right chevron overlay */}
-          <div
-            className="absolute right-0 top-0 w-0 h-0
-            border-t-[20px] border-t-transparent
-            border-b-[20px] border-b-transparent
-            border-r-[15px] border-r-ag-primary -mr-px"
-          />
-        </div>
-
-        {/* Marquee Content */}
-        <div className="flex-1 overflow-hidden relative group">
-          <div className="flex whitespace-nowrap animate-marquee hover:[animation-play-state:paused] text-[11px] font-body tracking-[0.05em] uppercase text-white/90">
-            {/* Repeat content for infinite scroll effect */}
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="flex items-center">
-                <span className="px-8">Free site visit & consultation across India</span>
-                <span className="px-8 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-ag-gold"></span>
-                  ISO 9001:2015 Certified
-                </span>
-                <span className="px-8 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-ag-gold"></span>
-                  FLAT 10% OFF on first project
-                </span>
-                <span className="px-8 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-ag-gold"></span>
-                  Premium Sports Surfaces & Equipment
-                </span>
+      {(!settings || settings.showTicker) && (
+        <div className="hidden md:flex bg-ag-primary text-white items-center h-10 overflow-hidden border-t-[3px] border-ag-gold w-full">
+          {/* "LATEST UPDATES" Label with Chevron cutout */}
+          <div className="relative bg-[#F4F5F7] text-ag-primary font-bold text-xs uppercase px-4 h-full flex items-center shrink-0 z-10 w-[200px]">
+            <div className="flex items-center gap-2">
+              <div className="border-[2px] border-ag-primary rounded-full p-[1px]">
+                <div className="w-1.5 h-1.5 bg-ag-primary rounded-full"></div>
               </div>
-            ))}
+              LATEST UPDATES
+            </div>
+            <div
+              className="absolute right-0 top-0 w-0 h-0
+              border-t-[20px] border-t-transparent
+              border-b-[20px] border-b-transparent
+              border-r-[15px] border-r-ag-primary -mr-px"
+            />
+          </div>
+
+          {/* Marquee Content */}
+          <div className="flex-1 overflow-hidden relative group">
+            <div className="flex whitespace-nowrap animate-marquee hover:[animation-play-state:paused] text-[11px] font-body tracking-[0.05em] uppercase text-white/90">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex items-center">
+                  {tickerItems.map((tk, idx) => (
+                    <span key={idx} className="px-8 flex items-center gap-2">
+                      {idx > 0 && <span className="w-1.5 h-1.5 rounded-full bg-ag-gold"></span>}
+                      {tk.text}
+                    </span>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Mobile Menu */}
       {isMenuOpen && (
@@ -271,26 +297,30 @@ export default function Navbar() {
           <div className="p-4 space-y-3">
             {navLinks.map((link) => (
               <Link
-                key={link.name}
+                key={link.label}
                 href={link.href}
                 className="flex items-center justify-between py-2 border-b border-ag-border text-sm font-body font-medium text-ag-text hover:text-ag-primary"
                 onClick={() => setIsMenuOpen(false)}
               >
-                {link.name}
+                {link.label}
                 <ChevronRight size={16} className="text-ag-text-muted" />
               </Link>
             ))}
-            <div className="pt-3 grid grid-cols-3 gap-3">
-              {categories.map((cat) => (
-                <Link key={cat} href={`/products?category=${cat.toLowerCase().replace(/\s+/g, "-")}`}
-                  className="flex flex-col items-center gap-1 p-2 bg-ag-bg-alt rounded text-ag-text-muted hover:text-ag-primary text-center"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <CategoryIcon name={cat} />
-                  <span className="text-[9px] leading-tight">{cat}</span>
-                </Link>
-              ))}
-            </div>
+            {(!settings || settings.showCategoryBar) && (
+              <div className="pt-3 grid grid-cols-3 gap-3">
+                {categories.map((cat) => (
+                  <Link key={cat.label} href={cat.href || `/products?category=${cat.id || cat.label.toLowerCase().replace(/\s+/g, "-")}`}
+                    className="flex flex-col items-center gap-1 p-2 bg-ag-bg-alt rounded text-ag-text-muted hover:text-ag-primary text-center"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <div className="w-8 h-8 rounded-full border border-ag-border flex items-center justify-center">
+                      <CategoryIcon name={cat.label} iconSvg={cat.iconSvg} />
+                    </div>
+                    <span className="text-[9px] leading-tight">{cat.label}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}

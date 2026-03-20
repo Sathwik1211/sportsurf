@@ -1,19 +1,28 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Instagram, Linkedin, Twitter, MapPin, Phone, Mail } from "lucide-react";
 
-const categories = [
-  "Surface sports",
-  "Water sports",
-  "Small sports",
-  "Budget sports",
-  "Sports academies",
-  "Play zones",
-  "Adventure sports games",
-  "Challenge courses",
-  "Talent scout clubs",
-];
-
 export default function Footer() {
+  const [settings, setSettings] = useState<any>(null);
+  const [categories, setCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch("/api/admin/settings")
+      .then(res => res.ok ? res.json() : null)
+      .then(data => setSettings(data))
+      .catch(console.error);
+
+    fetch("/api/admin/categories")
+      .then(res => res.ok ? res.json() : [])
+      .then(data => setCategories(data.length ? data.map((c: any) => c.label) : [
+        "Surface sports", "Water sports", "Small sports", "Budget sports",
+        "Sports academies", "Play zones", "Adventure sports games",
+        "Challenge courses", "Talent scout clubs"
+      ]))
+      .catch(console.error);
+  }, []);
   return (
     <footer className="bg-ag-primary text-white pt-12 pb-6 border-t border-white/10">
       <div className="container-retail">
@@ -25,7 +34,7 @@ export default function Footer() {
                 <span className="font-heading font-bold text-white text-sm italic">S</span>
               </div>
               <div>
-                <span className="font-heading font-bold text-white text-lg tracking-tighter block leading-none">SPORTSURF</span>
+                <span className="font-heading font-bold text-white text-lg tracking-tighter block leading-none">{settings?.siteName || "SPORTSURF"}</span>
                 <span className="text-[9px] font-body text-white/50 tracking-[0.2em] uppercase">India</span>
               </div>
             </Link>
@@ -37,7 +46,7 @@ export default function Footer() {
                 <a key={i} href="#" className="w-8 h-8 border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-ag-gold transition-all">
                   <Icon size={15} />
                 </a>
-              ))}
+               ))}
             </div>
           </div>
 
@@ -75,17 +84,17 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex gap-3">
                 <MapPin className="text-ag-gold shrink-0 mt-0.5" size={15} />
-                <span className="font-body text-white/60 text-xs leading-relaxed">
-                  Sports Arena Complex,<br />Cyber City, Gurgaon,<br />Haryana – 122002
+                <span className="font-body text-white/60 text-xs leading-relaxed whitespace-pre-line">
+                  {settings?.address || "Sports Arena Complex,\nCyber City, Gurgaon,\nHaryana – 122002"}
                 </span>
               </li>
               <li className="flex gap-3 items-center">
                 <Phone className="text-ag-gold shrink-0" size={15} />
-                <span className="font-body text-white/60 text-xs">+91 (800) SPORTSURF</span>
+                <span className="font-body text-white/60 text-xs">{settings?.contactPhone || "+91 (800) SPORTSURF"}</span>
               </li>
               <li className="flex gap-3 items-center">
                 <Mail className="text-ag-gold shrink-0" size={15} />
-                <span className="font-body text-white/60 text-xs">mission@sportsurf.in</span>
+                <span className="font-body text-white/60 text-xs">{settings?.contactEmail || "mission@sportsurf.in"}</span>
               </li>
             </ul>
           </div>
@@ -94,7 +103,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-3">
           <p className="font-body text-xs text-white/40">
-            &copy; {new Date().getFullYear()} SportSurf India. All rights reserved.
+            &copy; {new Date().getFullYear()} {settings?.siteName || "SportSurf India"}. All rights reserved.
           </p>
           <div className="flex gap-6">
             <Link href="/privacy" className="font-body text-xs text-white/40 hover:text-ag-gold uppercase tracking-wider">Privacy Policy</Link>

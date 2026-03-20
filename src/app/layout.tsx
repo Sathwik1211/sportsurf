@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -31,6 +30,8 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+import Providers from "@/components/Providers";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -39,11 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
       <body className="bg-ag-bg text-ag-text font-body antialiased">
-        <Navbar />
-        <main className="min-h-screen">
-          {children}
-        </main>
-        <Footer />
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

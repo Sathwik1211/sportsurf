@@ -50,16 +50,23 @@ const stats = [
   { value: 10, suffix: "+", label: "Years of Trust" },
 ];
 
-export default function StatsCounter() {
+export default function StatsCounter({ settings }: { settings: any }) {
+  let dynamicStats = stats;
+  try {
+    if (settings?.statsJson) dynamicStats = JSON.parse(settings.statsJson);
+  } catch (err) {
+    console.error("Failed to parse statsJson:", err);
+  }
+
   return (
     <section className="bg-ag-primary py-8 border-t border-b border-ag-primary">
       <div className="container-retail">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 divide-x divide-white/10">
-          {stats.map((stat, i) => (
+          {dynamicStats.map((stat: any, i: number) => (
             <div key={stat.label} className={`flex flex-col items-center text-center py-1 ${i > 0 ? "pl-6" : ""}`}>
               <div className="text-ag-gold">
                 <span className="font-heading font-bold text-3xl md:text-4xl leading-none text-white">
-                  {stat.value}{stat.suffix}
+                  {stat.value}{stat.suffix || "+"}
                 </span>
               </div>
               <span className="font-body text-white/60 text-[10px] uppercase tracking-[0.2em] mt-2">

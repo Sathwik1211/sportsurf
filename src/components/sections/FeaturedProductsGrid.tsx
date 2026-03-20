@@ -106,7 +106,9 @@ function PortfolioCard({ item, className }: { item: any; className: string }) {
   );
 }
 
-export default function FeaturedProductsGrid() {
+export default async function FeaturedProductsGrid({ categories = [] }: { categories?: any[] }) {
+  const items = categories.slice(0, 6); // Take first 6 for absolute grid mapping
+
   return (
     <section className="section-sm bg-ag-bg border-t border-ag-border">
       <div className="container-retail">
@@ -125,43 +127,49 @@ export default function FeaturedProductsGrid() {
 
         {/* Masonry Grid Layout */}
         <div className="grid grid-cols-12 gap-4 md:gap-5 auto-rows-[200px] md:auto-rows-[250px]">
-          {/* Surface sports - Large (Spans 2 rows) */}
-          <PortfolioCard item={featured[0]} className="col-span-12 md:col-span-6 row-span-2 h-auto" />
+          {items[0] && (
+            <PortfolioCard 
+              item={{ ...items[0], image: items[0].imageUrl || "/images/sports/surface_sports.png", desc: items[0].description || "Synthetic turf, running tracks & multi-sport courts", href: `/products?category=${encodeURIComponent(items[0].label)}`, count: "12 products" }} 
+              className="col-span-12 md:col-span-6 row-span-2 h-auto" 
+            />
+          )}
 
-          {/* Water sports - Medium */}
-          <PortfolioCard item={featured[1]} className="col-span-12 sm:col-span-6 md:col-span-6 row-span-1 h-[200px] md:h-auto" />
+          {items[1] && (
+            <PortfolioCard 
+              item={{ ...items[1], image: items[1].imageUrl || "/images/sports/water_sports.png", desc: items[1].description || "Kayaking lanes, pool decking & aquatic gear", href: `/products?category=${encodeURIComponent(items[1].label)}`, count: "8 products" }} 
+              className="col-span-12 sm:col-span-6 md:col-span-6 row-span-1 h-[200px] md:h-auto" 
+            />
+          )}
 
-          {/* Small sports - Small */}
-          <PortfolioCard item={featured[2]} className="col-span-6 md:col-span-3 row-span-1 h-[200px] md:h-auto" />
+          {items[2] && (
+            <PortfolioCard 
+              item={{ ...items[2], image: items[2].imageUrl || "/images/sports/small_sports.png", desc: items[2].description || "Badminton, table tennis & squash setups", href: `/products?category=${encodeURIComponent(items[2].label)}`, count: "15 products" }} 
+              className="col-span-6 md:col-span-3 row-span-1 h-[200px] md:h-auto" 
+            />
+          )}
 
-          {/* Budget sports - Small */}
-          <PortfolioCard item={featured[3]} className="col-span-6 md:col-span-3 row-span-1 h-[200px] md:h-auto" />
+          {items[3] && (
+            <PortfolioCard 
+              item={{ ...items[3], image: items[3].imageUrl || "/images/sports/budget_sports.png", desc: items[3].description || "Cost-effective solutions for schools & communities", href: `/products?category=${encodeURIComponent(items[3].label)}`, count: "20 products" }} 
+              className="col-span-6 md:col-span-3 row-span-1 h-[200px] md:h-auto" 
+            />
+          )}
 
-          {/* Adventure sports - Wide */}
-          <PortfolioCard item={featured[4]} className="col-span-12 md:col-span-8 row-span-1 h-[200px] md:h-auto" />
+          {items[4] && (
+            <PortfolioCard 
+              item={{ ...items[4], image: items[4].imageUrl || "/images/sports/adventure_sports.png", desc: items[4].description || "Climbing walls, rope courses & obstacle setups", href: `/products?category=${encodeURIComponent(items[4].label)}`, count: "7 products" }} 
+              className="col-span-12 md:col-span-8 row-span-1 h-[200px] md:h-auto" 
+            />
+          )}
 
-          {/* Play zones - Medium */}
-          <PortfolioCard item={featured[5]} className="col-span-12 md:col-span-4 row-span-1 h-[200px] md:h-auto" />
+          {items[5] && (
+            <PortfolioCard 
+              item={{ ...items[5], image: items[5].imageUrl || "/images/sports/play_zones.png", desc: items[5].description || "Premium children's play areas & soft surfaces", href: `/products?category=${encodeURIComponent(items[5].label)}`, count: "10 products" }} 
+              className="col-span-12 md:col-span-4 row-span-1 h-[200px] md:h-auto" 
+            />
+          )}
         </div>
 
-        {/* Trust bar */}
-        <div className="mt-6 grid grid-cols-3 gap-4">
-          {[
-            { label: "Certified Quality", sub: "ISO 9001:2015 Approved" },
-            { label: "Global Quality Standards", sub: "FIFA & FIBA Approved Specs" },
-            { label: "Expert Installation", sub: "Qualified Technical Teams" },
-          ].map(({ label, sub }) => (
-            <div key={label} className="flex items-center gap-3 p-4 bg-white border border-ag-border">
-              <div className="w-8 h-8 rounded-full bg-ag-primary/5 flex items-center justify-center text-ag-primary shrink-0">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
-              </div>
-              <div>
-                <p className="text-xs font-body font-semibold text-ag-text">{label}</p>
-                <p className="text-[10px] font-body text-ag-text-muted">{sub}</p>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   );

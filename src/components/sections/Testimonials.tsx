@@ -2,11 +2,13 @@
 
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import { testimonials } from "../../data/testimonials";
+import { testimonials as fallbackTestimonials } from "../../data/testimonials";
 import { Star, Quote } from "lucide-react";
 
-export default function Testimonials() {
+export default function Testimonials({ testimonials }: { testimonials?: any[] }) {
   const [emblaRef] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 5000 })]);
+
+  const list = testimonials && testimonials.length ? testimonials : fallbackTestimonials;
 
   return (
     <section className="section-sm bg-ag-bg-alt border-t border-ag-border">
@@ -23,7 +25,7 @@ export default function Testimonials() {
 
         <div className="overflow-hidden" ref={emblaRef}>
           <div className="flex gap-4">
-            {testimonials.map((t) => (
+            {list.map((t: any) => (
               <div key={t.id} className="flex-[0_0_100%] md:flex-[0_0_45%] lg:flex-[0_0_33%]">
                 <div className="bg-white border border-ag-border h-full p-6 flex flex-col justify-between">
                   <div className="space-y-4">
@@ -42,7 +44,7 @@ export default function Testimonials() {
 
                   <div className="mt-5 pt-4 border-t border-ag-border flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-ag-primary flex items-center justify-center font-heading font-bold text-white text-xs">
-                      {t.avatar}
+                      {t.avatar ? t.avatar : t.name.charAt(0)}
                     </div>
                     <div>
                       <h4 className="font-body font-semibold text-ag-text text-sm">{t.name}</h4>

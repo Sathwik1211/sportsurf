@@ -1,13 +1,19 @@
 "use client";
 
-export default function Hero() {
+export default function Hero({ hero }: { hero?: any }) {
+  const data = hero || {
+    title: "YOUR COMPLETE GUIDE TO",
+    subtitle: "SPORTS INFRASTRUCTURE",
+    imageUrl: "/images/sports/premium_sports_hero.png"
+  };
+
   return (
     <section className="relative w-full h-[85vh] min-h-[500px] overflow-hidden bg-ag-bg flex flex-col justify-end pt-[152px]">
       {/* Background Image - Premium Sports Infrastructure */}
       <img
-        src="/images/sports/premium_sports_hero.png"
+        src={data.imageUrl && data.imageUrl.startsWith("http") ? data.imageUrl : "/images/hero_indian_arena.png"}
         alt="Premium Indian Sports Infrastructure"
-        className="absolute inset-0 w-full h-full object-cover object-center"
+        className="absolute inset-0 w-full h-full object-cover object-top"
       />
 
       {/* Subtle Overlay to make text readable */}
@@ -23,20 +29,23 @@ export default function Hero() {
             textShadow: "0 2px 10px rgba(0,0,0,0.5)" 
           }}
         >
-          YOUR COMPLETE GUIDE TO<br />
-          SPORTS INFRASTRUCTURE
+          {data.title.split("<br />").map((text: string, i: number) => (
+            <span key={i}>{text}{i === 0 && <br />}</span>
+          ))}
         </h1>
 
         {/* Sub-headline */}
-        <p 
-          className="font-body font-bold text-white tracking-widest uppercase"
-          style={{ 
-            fontSize: "clamp(0.9rem, 1.5vw, 1.25rem)",
-            textShadow: "0 2px 8px rgba(0,0,0,0.5)" 
-          }}
-        >
-          SURFACES + EQUIPMENT
-        </p>
+        {data.subtitle && (
+          <p 
+            className="font-body font-bold text-white tracking-widest uppercase"
+            style={{ 
+              fontSize: "clamp(0.9rem, 1.5vw, 1.25rem)",
+              textShadow: "0 2px 8px rgba(0,0,0,0.5)" 
+            }}
+          >
+            {data.subtitle}
+          </p>
+        )}
       </div>
     </section>
   );

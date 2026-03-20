@@ -1,5 +1,5 @@
-export default function MarqueeStrip() {
-  const items = [
+export default function MarqueeStrip({ items }: { items?: any[] }) {
+  const defaultItems = [
     "SURFACE SPORTS",
     "WATER SPORTS",
     "SMALL SPORTS",
@@ -11,12 +11,14 @@ export default function MarqueeStrip() {
     "TALENT SCOUT CLUBS",
   ];
 
+  const list = items && items.length ? items.map(x => x.text) : defaultItems;
+
   return (
     <div className="bg-ag-bg-alt border-y border-ag-border py-3 overflow-hidden relative">
       <div className="flex whitespace-nowrap animate-marquee pointer-events-none">
         {[...Array(4)].map((_, i) => (
           <div key={i} className="flex gap-12 px-6">
-            {items.map((item) => (
+            {list.map((item) => (
               <span
                 key={item}
                 className="font-body font-semibold text-ag-text-muted/50 text-[11px] tracking-[0.25em] flex items-center gap-12"

@@ -8,10 +8,17 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "dependencies": {
+    "@auth/prisma-adapter": "^1.6.0",
+    "@prisma/client": "^5.14.0",
     "@react-three/drei": "^9.107.0",
     "@react-three/fiber": "^8.16.8",
+    "@types/bcryptjs": "^2.4.6",
     "autoprefixer": "^10.4.27",
+    "bcryptjs": "^3.0.3",
     "canvas-confetti": "^1.9.3",
     "clsx": "^2.1.1",
     "embla-carousel-autoplay": "^8.6.0",
@@ -20,6 +27,9 @@
     "gsap": "^3.12.5",
     "lucide-react": "^0.395.0",
     "next": "14.2.3",
+    "next-auth": "^4.24.13",
+    "nodemailer": "^8.0.2",
+    "prisma": "^5.14.0",
     "react": "^18",
     "react-dom": "^18",
     "tailwind-merge": "^2.3.0",
@@ -27,6 +37,7 @@
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/nodemailer": "^7.0.11",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/three": "^0.165.0",
@@ -34,6 +45,8 @@
     "eslint-config-next": "14.2.3",
     "postcss": "^8.5.8",
     "tailwindcss": "^3.4.19",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

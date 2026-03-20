@@ -3,10 +3,12 @@
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
-import { projects } from "@/data/projects";
+import { projects as fallbackProjects } from "@/data/projects";
 
-export default function FeaturedProjects() {
+export default function FeaturedProjects({ projects }: { projects?: any[] }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
+  
+  const list = projects && projects.length ? projects : fallbackProjects;
 
   return (
     <section className="section-sm bg-white border-t border-ag-border">
@@ -32,10 +34,10 @@ export default function FeaturedProjects() {
 
         <div className="overflow-hidden" ref={emblaRef}>
           <div className="flex gap-4">
-            {projects.map((project) => (
+            {list.map((project: any) => (
               <Link key={project.id} href={`/projects/${project.id}`} className="flex-[0_0_100%] md:flex-[0_0_46%] lg:flex-[0_0_31%] group cursor-grab active:cursor-grabbing">
                 <div className="img-overlay-card h-52">
-                  <img src={project.image || "/images/sports/surface_sports.png"} alt={project.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <img src={project.imageUrl || project.image || "/images/sports/surface_sports.png"} alt={project.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-ag-text/70 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <div className="flex items-center gap-1.5 mb-2">
