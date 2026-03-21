@@ -10,7 +10,7 @@
     "postinstall": "prisma generate"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "tsx src/scripts/seed_cloud.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.6.0",

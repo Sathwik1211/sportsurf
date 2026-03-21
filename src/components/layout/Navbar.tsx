@@ -6,15 +6,11 @@ import { usePathname } from "next/navigation";
 import { Search, ShoppingBag, User, Menu, X, ChevronRight, Mail, Phone, Facebook, Twitter, Youtube, Instagram, Linkedin } from "lucide-react";
 
 // Flat SVG icons for each category...
-const CategoryIcon = ({ name, iconSvg, imageUrl }: { name: string; iconSvg?: string; imageUrl?: string }) => {
+const CategoryIcon = ({ name, iconSvg }: { name: string; iconSvg?: string }) => {
   const iconClass = "w-8 h-8 object-contain";
 
   if (iconSvg) {
     return <div className={iconClass} dangerouslySetInnerHTML={{ __html: iconSvg }} />;
-  }
-
-  if (imageUrl) {
-    return <img src={imageUrl} alt={name} className={iconClass} onError={e => e.currentTarget.style.display="none"} />;
   }
 
   const icons: Record<string, JSX.Element> = {
@@ -59,7 +55,7 @@ const CategoryIcon = ({ name, iconSvg, imageUrl }: { name: string; iconSvg?: str
         <path d="M5 21h14" />
       </svg>
     ),
-    "Adventure sports": (
+    "Adventure sports games": (
       <svg viewBox="0 0 24 24" fill="none" className={iconClass} stroke="currentColor" strokeWidth={1.5}>
         <path d="M3 17l4-8 5 5 4-9 5 12" />
         <circle cx="19" cy="5" r="2" />
@@ -243,7 +239,7 @@ export default function Navbar() {
                   className="group flex flex-col items-center gap-1.5 px-4 py-2 min-w-fit hover:bg-ag-bg-alt transition-all duration-200 relative"
                 >
                   <div className="text-ag-text-muted group-hover:text-ag-primary transition-colors">
-                    <CategoryIcon name={cat.label} iconSvg={cat.iconSvg} imageUrl={cat.navbarIconUrl || cat.imageUrl} />
+                    <CategoryIcon name={cat.label} iconSvg={cat.iconSvg} />
                   </div>
                   <span className="text-[11px] font-body text-ag-text-muted group-hover:text-ag-primary transition-colors whitespace-nowrap tracking-wide">{cat.label}</span>
                   <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-ag-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-200" />
