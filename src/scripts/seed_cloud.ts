@@ -74,6 +74,7 @@ async function main() {
     category: p.category,
     shortSpec: p.shortSpec,
     imageUrl: p.images?.[0] || "/images/sports/surface_sports.png",
+    imagesJson: JSON.stringify(p.images || [p.imageUrl || "/images/sports/surface_sports.png"]),
     isNew: !!p.isNew,
     isFeatured: !!p.isFeatured,
     heightClass: p.heightClass || "h-[400px]",

@@ -14,7 +14,25 @@ type Tab = "overview" | "hero" | "navigation" | "categories" | "homepage" | "pro
 interface StatsData { userCount: number; productCount: number; projectCount: number; testimonialCount: number }
 interface HeroItem { id: string; page: string; title: string; subtitle?: string; imageUrl?: string; ctaText?: string; ctaLink?: string; textColor: string; overlayOpacity: number }
 interface NavItem { id: string; label: string; href: string; order: number }
-interface ProductItem { id: string; slug: string; name: string; category: string; shortSpec?: string; description: string; isNew: boolean; isFeatured: boolean; imageUrl?: string }
+interface ProductItem { 
+  id: string; 
+  slug: string; 
+  name: string; 
+  category: string; 
+  shortSpec?: string; 
+  description: string; 
+  isNew: boolean; 
+  isFeatured: boolean; 
+  imageUrl?: string; 
+  imagesJson?: string; 
+  specs?: string; 
+  heightClass?: string;
+  whyInvestJson?: string;
+  premiumBenefitsJson?: string;
+  servicesTitle?: string;
+  servicesSubtitle?: string;
+  servicesJson?: string;
+}
 interface ProjectItem { id: string; name: string; city: string; state: string; surface: string; area: string; year: string; imageUrl?: string }
 interface TestimonialItem { id: string; name: string; institution: string; quote: string; avatar?: string }
 interface UserItem { id: string; name?: string; email?: string; role: string; emailVerified?: string }
@@ -310,19 +328,42 @@ export default function AdminDashboard() {
     });
   }
 
-  async function saveProduct() {
-    const isEdit = !!formData.id;
-    const url = isEdit ? `/api/admin/products/${formData.id}` : "/api/admin/products";
-    const method = isEdit ? "PUT" : "POST";
-    const body = { ...formData, isNew: !!formData.isNew, isFeatured: !!formData.isFeatured };
-    const res = await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-    if (res.ok) {
-      const p = await fetchData("/api/admin/products");
-      if (p) setProducts(p);
-      setModal(null);
-      showToast(isEdit ? "Product updated!" : "Product added!");
-    } else showToast("Failed to save", "error");
-  }
+   async function saveProduct() {
+      // Basic JSON validation before saving
+      try {
+         if (formData.imagesJson) JSON.parse(formData.imagesJson);
+         if (formData.specs) JSON.parse(formData.specs);
+         if (formData.whyInvestJson) JSON.parse(formData.whyInvestJson);
+         if (formData.premiumBenefitsJson) JSON.parse(formData.premiumBenefitsJson);
+         if (formData.servicesJson) JSON.parse(formData.servicesJson);
+      } catch (e) {
+         showToast("Invalid JSON in one of the fields. Please check your formatting.", "error");
+         return;
+      }
+
+      const isEdit = !!formData.id;
+      const url = isEdit ? `/api/admin/products/${formData.id}` : "/api/admin/products";
+      const method = isEdit ? "PUT" : "POST";
+      
+      // Sanitize body: remove id, createdAt, updatedAt for Prisma
+      const { id, createdAt, updatedAt, ...rest } = formData;
+      const body = { 
+        ...rest, 
+        isNew: !!formData.isNew, 
+        isFeatured: !!formData.isFeatured 
+      };
+
+      const res = await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      if (res.ok) {
+         const p = await fetchData("/api/admin/products");
+         if (p) setProducts(p);
+         setModal(null);
+         showToast(isEdit ? "Product updated!" : "Product added!");
+      } else {
+        const err = await res.json();
+        showToast(err.error || "Failed to save", "error");
+      }
+   }
 
   async function deleteProduct(id: string) {
     setConfirmModal({
@@ -1018,36 +1059,117 @@ export default function AdminDashboard() {
       {modal?.type === "product" && (
         <Modal title={formData.id ? "Edit Product" : "Add Product"} onClose={() => setModal(null)}>
           <div className="space-y-4">
-            <Field label="Name" name="name" value={formData.name || ""} onChange={handleFormChange} required />
-            <Field label="Slug" name="slug" value={formData.slug || ""} onChange={handleFormChange} required />
-            <div className="space-y-1">
-              <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Category</label>
-              <select 
-                name="category" 
-                value={formData.category || ""} 
-                onChange={handleFormChange} 
-                className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-                required
-              >
-                <option value="">Select Category</option>
-                {categories.map(c => <option key={c.id} value={c.label}>{c.label}</option>)}
-              </select>
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Name" name="name" value={formData.name || ""} onChange={handleFormChange} required />
+              <Field label="Slug" name="slug" value={formData.slug || ""} onChange={handleFormChange} required />
             </div>
-            <Field label="Subcategory (Sport Name)" name="shortSpec" value={formData.shortSpec || ""} onChange={handleFormChange} />
+            
+            <div className="grid grid-cols-2 gap-4 text-left">
+              <div className="space-y-1">
+                <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Category</label>
+                <select 
+                  name="category" 
+                  value={formData.category || ""} 
+                  onChange={handleFormChange} 
+                  className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  required
+                >
+                  <option value="">Select Category</option>
+                  {categories.map(c => <option key={c.id} value={c.label}>{c.label}</option>)}
+                </select>
+              </div>
+              <Field label="Subcategory (Sport Name)" name="shortSpec" value={formData.shortSpec || ""} onChange={handleFormChange} />
+            </div>
+
             <Field label="Description" name="description" value={formData.description || ""} onChange={handleFormChange} required textarea />
-            <Field label="Image URL" name="imageUrl" value={formData.imageUrl || ""} onChange={handleFormChange} />
-            <div className="flex gap-4">
+            
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Thumbnail Image URL" name="imageUrl" value={formData.imageUrl || ""} onChange={handleFormChange} />
+              <Field label="Card Height Class" name="heightClass" value={formData.heightClass || "h-[400px]"} onChange={handleFormChange} />
+            </div>
+
+            {/* Multiple Images Editor */}
+            <div className="space-y-2">
+              <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wide">Image Gallery (JSON Array of URLs)</label>
+              <textarea 
+                name="imagesJson" 
+                value={formData.imagesJson || "[]"} 
+                onChange={handleFormChange} 
+                className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-mono h-20 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                placeholder='["/img1.jpg", "/img2.jpg"]'
+              />
+            </div>
+
+            {/* Specs Editor */}
+            <div className="space-y-2">
+              <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wide">Technical Specifications (JSON Array: {`{"label": "...", "value": "..."}`})</label>
+              <textarea 
+                name="specs" 
+                value={formData.specs || "[]"} 
+                onChange={handleFormChange} 
+                className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-mono h-24 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                placeholder='[{"label": "Thickness", "value": "15mm"}]'
+              />
+            </div>
+
+            <div className="border-t border-slate-100 pt-4 mt-6">
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Product Detail Page Content</h4>
+              
+              {/* Why Invest Section */}
+              <div className="space-y-2 mb-4">
+                <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wide">Why Invest Points (JSON: {`[{"icon": "TrendingUp", "title": "...", "desc": "..."}]`})</label>
+                <textarea 
+                  name="whyInvestJson" 
+                  value={formData.whyInvestJson || "[]"} 
+                  onChange={handleFormChange} 
+                  className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-mono h-32 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  placeholder='[{"icon": "TrendingUp", "title": "...", "desc": "..."}]'
+                />
+              </div>
+
+              {/* Why Choose Premium Section */}
+              <div className="space-y-2 mb-4">
+                <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wide">Premium Benefits (JSON: {`["Benefit 1", "Benefit 2"]`})</label>
+                <textarea 
+                  name="premiumBenefitsJson" 
+                  value={formData.premiumBenefitsJson || "[]"} 
+                  onChange={handleFormChange} 
+                  className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-mono h-20 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  placeholder='["Benefit 1", "Benefit 2"]'
+                />
+              </div>
+
+              {/* Services Section */}
+              <div className="bg-slate-50 p-4 rounded-2xl space-y-4 mb-4">
+                <h5 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Services Section</h5>
+                <Field label="Services Section Title" name="servicesTitle" value={formData.servicesTitle || "Premium Services"} onChange={handleFormChange} />
+                <Field label="Services Section Subtitle" name="servicesSubtitle" value={formData.servicesSubtitle || ""} onChange={handleFormChange} textarea />
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wide">Service Cards (JSON: {`[{"icon": "PenTool", "title": "...", "desc": "..."}]`})</label>
+                  <textarea 
+                    name="servicesJson" 
+                    value={formData.servicesJson || "[]"} 
+                    onChange={handleFormChange} 
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-mono h-32 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                    placeholder='[{"icon": "PenTool", "title": "...", "desc": "..."}]'
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-4 p-2 bg-slate-50 rounded-xl">
               <label className="flex items-center gap-2 text-sm cursor-pointer">
                 <input type="checkbox" name="isNew" checked={!!formData.isNew} onChange={handleFormChange} className="w-4 h-4 accent-amber-500" />
-                <span className="text-slate-700">Mark as New</span>
+                <span className="text-slate-700 font-medium">New Arrival</span>
               </label>
               <label className="flex items-center gap-2 text-sm cursor-pointer">
                 <input type="checkbox" name="isFeatured" checked={!!formData.isFeatured} onChange={handleFormChange} className="w-4 h-4 accent-amber-500" />
-                <span className="text-slate-700">Featured</span>
+                <span className="text-slate-700 font-medium">Featured</span>
               </label>
             </div>
-            <button onClick={saveProduct} className="w-full bg-amber-500 hover:bg-amber-400 text-white py-3 rounded-xl font-bold transition flex items-center justify-center gap-2">
-              <Save size={16} /> Save Product
+
+            <button onClick={saveProduct} className="w-full bg-amber-500 hover:bg-amber-400 text-white py-3 rounded-xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20">
+              <Save size={16} /> Save Product & Details
             </button>
           </div>
         </Modal>

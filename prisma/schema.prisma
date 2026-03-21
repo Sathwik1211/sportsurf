@@ -154,7 +154,16 @@ model Product {
   isFeatured  Boolean  @default(false)
   heightClass String   @default("h-[400px]")
   imageUrl    String?
+  imagesJson  String?  // JSON Array of image URLs
   specs       String?  // Stringified JSON Array of {label, value}
+  
+  // New Editable Sections
+  whyInvestJson      String?  // JSON Array: [{ icon: string, title: string, desc: string }]
+  premiumBenefitsJson String? // JSON Array: string[]
+  servicesTitle      String?  @default("Premium Services")
+  servicesSubtitle   String?  @default("We take full ownership of your project from the ground up.")
+  servicesJson       String?  // JSON Array: [{ icon: string, title: string, desc: string }]
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
