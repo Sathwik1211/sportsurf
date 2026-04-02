@@ -14,7 +14,7 @@ export default function ProjectDetailPage() {
 
   if (!project) {
     return (
-      <div className="min-h-screen pt-64 flex flex-col items-center justify-center space-y-4">
+      <div className="pt-12     min-h-screen  flex flex-col items-center justify-center space-y-4">
         <h1 className="text-2xl font-bold">Project Not Found</h1>
         <Link href="/projects" className="text-ag-primary hover:underline">Back to Projects</Link>
       </div>
@@ -22,7 +22,7 @@ export default function ProjectDetailPage() {
   }
 
   return (
-    <div className="bg-ag-bg min-h-screen pt-52 pb-20">
+    <div className="pt-12   bg-ag-bg min-h-screen  pb-20">
       <div className="container-retail">
         <button 
           onClick={() => router.back()}

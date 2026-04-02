@@ -4,7 +4,7 @@ import { FileText, Gavel, AlertCircle, CheckCircle2 } from "lucide-react";
 
 export default function TermsPage() {
   return (
-    <div className="bg-ag-bg min-h-screen pt-64 pb-20">
+    <div className="pt-12     bg-ag-bg min-h-screen  pb-32">
       <div className="container-retail">
         <div className="max-w-4xl mx-auto">
           <div className="mb-16">
@@ -70,7 +70,7 @@ export default function TermsPage() {
                 </div>
              </section>
 
-             <div className="pt-12 border-t border-ag-border">
+             <div className=" border-t border-ag-border">
                 <p className="font-body text-[10px] text-ag-text-muted font-bold text-center uppercase tracking-[0.3em]">
                    Last Updated: March 2024 • Gurgaon, India
                 </p>

@@ -71,14 +71,14 @@ function ProductsContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-ag-bg flex items-center justify-center">
+      <div className="pt-12      min-h-screen bg-ag-bg flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-2 border-ag-primary border-t-transparent animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-ag-bg pt-52 pb-20">
+    <div className="pt-12   min-h-screen bg-ag-bg  pb-20">
       <div className="container-retail">
         {/* Breadcrumb / Top Bar */}
         <div className="mb-8">
@@ -103,10 +103,12 @@ function ProductsContent() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <h1 className="text-3xl md:text-4xl font-heading font-black text-ag-text mb-2 tracking-tighter uppercase">
-                {activeSport !== 'all' ? activeSport : (activeCategory === 'all' ? 'All Products' : currentCategoryLabel)}
+                {activeSport !== 'all' ? activeSport : (activeCategory === 'all' ? 'Explore Infrastructure' : currentCategoryLabel)}
               </h1>
               <p className="text-ag-text-muted max-w-2xl text-sm font-body">
-                Discover our range of premium sports infrastructure and equipment tailored for {activeCategory === 'all' ? 'all sports' : currentCategoryLabel.toLowerCase()}.
+                {activeCategory === 'all' 
+                  ? "Select a category from the top navigation to explore our premium sports infrastructure solutions." 
+                  : `Discover our range of premium sports infrastructure and equipment tailored for ${currentCategoryLabel.toLowerCase()}.`}
               </p>
             </div>
             
@@ -159,7 +161,7 @@ function ProductsContent() {
                   </div>
                 ) : (
                     <div className="text-sm text-ag-text-muted mt-4">
-                        Please select a category from the top navigation to view specific sports.
+                        Please select a category from the top navigation to view our specialized solutions.
                     </div>
                 )}
               </div>
@@ -168,6 +170,24 @@ function ProductsContent() {
 
           {/* Main Content */}
           <div className="lg:col-span-3">
+            {/* Quick-Jump for Sub-categories (Horizontal on desktop top if activeSport is all) */}
+            {activeCategory !== 'all' && activeSport === 'all' && sportsInCategory.length > 1 && (
+              <div className="mb-10 bg-white border border-ag-border p-4 overflow-x-auto">
+                <p className="text-[10px] font-body font-bold text-ag-text-muted uppercase tracking-widest mb-3 px-2">Sub Categories</p>
+                <div className="flex gap-3">
+                  {sportsInCategory.map(sport => (
+                    <button
+                      key={sport}
+                      onClick={() => setActiveSport(sport)}
+                      className="px-4 py-2 bg-ag-bg-alt border border-ag-border rounded text-xs font-bold text-ag-text whitespace-nowrap hover:border-ag-primary transition-colors"
+                    >
+                      {sport.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Header / Search */}
             <div className="bg-white border border-ag-border p-4 mb-6 flex items-center justify-between">
               <div className="text-sm text-ag-text-muted font-body">
@@ -189,20 +209,57 @@ function ProductsContent() {
               </div>
             </div>
 
-            {/* Product Grid */}
+            {/* Product Grid / Grouped Display */}
             {filteredProducts.length > 0 ? (
-              <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-                {filteredProducts.map((product) => (
-                  <div key={product.id} className="break-inside-avoid">
-                    <ProductCard 
-                      name={product.name}
-                      category={product.category}
-                      shortSpec={product.shortSpec || product.description}
-                      slug={product.slug}
-                      image={product.imageUrl || "/images/sports/surface_sports.png"}
-                    />
+              <div className="space-y-16">
+                {activeSport === 'all' ? (
+                  // Grouped by Sub-Category (Sport)
+                  sportsInCategory.map(sport => {
+                    const productsInSport = filteredProducts.filter(p => p.shortSpec === sport || p.name === sport);
+                    if (productsInSport.length === 0) return null;
+                    
+                    return (
+                      <div key={sport} className="space-y-8">
+                        <div className="flex items-center gap-4">
+                          <h2 className="font-heading font-black text-xl md:text-2xl text-ag-text uppercase tracking-tight">
+                            {sport}
+                          </h2>
+                          <div className="flex-1 h-px bg-ag-border" />
+                          <span className="text-[10px] font-body font-bold text-ag-text-muted tracking-widest uppercase">
+                            {productsInSport.length} Items
+                          </span>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {productsInSport.map((product) => (
+                            <ProductCard 
+                              key={product.id}
+                              name={product.name}
+                              category={product.category}
+                              shortSpec={product.shortSpec || product.description}
+                              slug={product.slug}
+                              image={product.imageUrl || "/images/sports/surface_sports.png"}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  // Normal Filtered Grid for specific sport
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredProducts.map((product) => (
+                      <ProductCard 
+                        key={product.id}
+                        name={product.name}
+                        category={product.category}
+                        shortSpec={product.shortSpec || product.description}
+                        slug={product.slug}
+                        image={product.imageUrl || "/images/sports/surface_sports.png"}
+                      />
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
             ) : (
               <div className="bg-white border border-ag-border border-dashed p-12 text-center">
@@ -237,7 +294,7 @@ function ProductsContent() {
 
 export default function ProductsPage() {
     return (
-        <Suspense fallback={<div className="min-h-screen bg-ag-bg flex items-center justify-center pt-32"><div className="w-8 h-8 rounded-full border-2 border-ag-primary border-t-transparent animate-spin"></div></div>}>
+        <Suspense fallback={<div className="min-h-screen bg-ag-bg flex items-center justify-center "><div className="w-8 h-8 rounded-full border-2 border-ag-primary border-t-transparent animate-spin"></div></div>}>
             <ProductsContent />
         </Suspense>
     )

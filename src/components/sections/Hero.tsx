@@ -4,23 +4,23 @@ export default function Hero({ hero }: { hero?: any }) {
   const data = hero || {
     title: "YOUR COMPLETE GUIDE TO",
     subtitle: "SPORTS INFRASTRUCTURE",
-    imageUrl: "/images/sports/premium_sports_hero.png"
+    imageUrl: "https://images.unsplash.com/photo-1541252260737-fb427fbf930b?q=80&w=2500&auto=format&fit=crop"
   };
 
   return (
-    <section className="relative w-full h-[85vh] min-h-[500px] overflow-hidden bg-ag-bg flex flex-col justify-end pt-[152px]">
+    <section className="relative w-full h-[50vh] min-h-[400px] overflow-hidden bg-ag-bg flex flex-col justify-end">
       {/* Background Image - Premium Sports Infrastructure */}
       <img
         src={data.imageUrl || "/images/hero_indian_arena.png"}
         alt="Premium Indian Sports Infrastructure"
-        className="absolute inset-0 w-full h-full object-cover object-top"
+        className="absolute inset-0 w-full h-full object-cover object-center"
       />
 
       {/* Subtle Overlay to make text readable */}
       <div className="absolute inset-0 bg-black/40" />
 
       {/* Centered Content */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 mt-[100px]">
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 mt-[30px]">
         {/* Main Headline */}
         <h1 
           className="font-body font-black text-white leading-[1.1] tracking-tight mb-4"

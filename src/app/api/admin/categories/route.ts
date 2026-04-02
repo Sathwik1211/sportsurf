@@ -12,7 +12,10 @@ async function checkAdmin() {
 
 export async function GET() {
   try {
-    const categories = await prisma.category.findMany({ orderBy: { order: "asc" } });
+    const categories = await prisma.category.findMany({ 
+      include: { subCategories: true }, 
+      orderBy: { order: "asc" } 
+    });
     return NextResponse.json(categories);
   } catch {
     return NextResponse.json([]);

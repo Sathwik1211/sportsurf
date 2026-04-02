@@ -79,7 +79,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="bg-ag-bg min-h-screen pt-32 pb-20"> {/* Reduced pt from 64 to 32 for better alignment */}
+    <div className="pt-12     bg-ag-bg min-h-screen  pb-32"> {/* Reduced pt from 64 to 32 for better alignment */}
       <div className="container-retail">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-10">

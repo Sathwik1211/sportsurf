@@ -11,7 +11,7 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
   return (
     <>
       <Navbar />
-      <main className="min-h-screen">
+      <main className="min-h-screen pt-[220px]">
         {children}
       </main>
       <Footer />

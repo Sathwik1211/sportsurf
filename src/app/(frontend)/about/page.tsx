@@ -42,8 +42,8 @@ export default async function AboutPage() {
    }
 
    return (
-     <div className="bg-ag-bg min-h-screen pt-64 pb-20 overflow-hidden">
-       <Section noPadding className="mb-20">
+     <div className="pt-12      bg-ag-bg min-h-screen  pb-32 overflow-hidden">
+       <Section className="mb-32">
          <div className="container mx-auto px-6">
            <div className="max-w-4xl mx-auto text-center space-y-6">
              <h1 className="font-display font-black text-ag-lunar text-4xl md:text-7xl uppercase leading-none">

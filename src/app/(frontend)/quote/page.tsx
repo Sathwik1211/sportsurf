@@ -15,7 +15,7 @@ export default function QuotePage() {
   };
 
   return (
-    <div className="bg-ag-bg min-h-screen pt-64 pb-20">
+    <div className="pt-12     bg-ag-bg min-h-screen  pb-32">
       <div className="container-retail">
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">

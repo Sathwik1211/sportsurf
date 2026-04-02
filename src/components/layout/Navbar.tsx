@@ -97,7 +97,6 @@ export default function Navbar() {
     fetch("/api/admin/navigation")
       .then(res => res.ok ? res.json() : [])
       .then(data => setNavLinks(data.length ? data : [
-        { label: "Products", href: "/products" },
         { label: "Projects", href: "/projects" },
         { label: "About Us", href: "/about" },
         { label: "Contact", href: "/contact" }
@@ -232,19 +231,32 @@ export default function Navbar() {
         <div className="hidden md:block bg-white border-b border-ag-border">
           <div className="container-retail">
             <div className="flex items-center justify-between py-3 overflow-x-auto scrollbar-hide gap-2">
-               {categories.map((cat, i) => (
-                <Link
-                  key={cat.label}
-                  href={cat.href || `/products?category=${(cat as any).id || cat.label.toLowerCase().replace(/\s+/g, "-")}`}
-                  className="group flex flex-col items-center gap-1.5 px-4 py-2 min-w-fit hover:bg-ag-bg-alt transition-all duration-200 relative"
-                >
-                  <div className="text-ag-text-muted group-hover:text-ag-primary transition-colors">
-                    <CategoryIcon name={cat.label} iconSvg={cat.iconSvg} />
-                  </div>
-                  <span className="text-[11px] font-body text-ag-text-muted group-hover:text-ag-primary transition-colors whitespace-nowrap tracking-wide">{cat.label}</span>
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-ag-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-200" />
-                </Link>
-              ))}
+               {categories.map((cat, i) => {
+                 const catHref = cat.href || `/${cat.label.toLowerCase().replace(/\s+/g, "-")}`;
+                 const isActive = pathname === catHref;
+                 
+                 return (
+                  <Link
+                    key={cat.label}
+                    href={catHref}
+                    className={`group flex flex-col items-center gap-1.5 px-5 py-2.5 min-w-fit transition-all duration-300 relative ${
+                      isActive ? "bg-ag-bg-alt" : "hover:bg-ag-bg-alt"
+                    }`}
+                  >
+                    <div className={`${isActive ? "text-ag-primary" : "text-ag-text-muted"} group-hover:text-ag-primary transition-colors`}>
+                      <CategoryIcon name={cat.label} iconSvg={cat.iconSvg} />
+                    </div>
+                    <span className={`text-[11px] font-body transition-colors whitespace-nowrap tracking-wide ${
+                      isActive ? "text-ag-primary font-bold" : "text-ag-text-muted"
+                    } group-hover:text-ag-primary`}>
+                      {cat.label}
+                    </span>
+                    <span className={`absolute bottom-0 left-0 right-0 h-[3px] bg-ag-primary transition-transform duration-300 origin-center ${
+                      isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                    }`} />
+                  </Link>
+                 );
+               })}
             </div>
           </div>
         </div>
@@ -267,8 +279,8 @@ export default function Navbar() {
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="flex items-center">
                   {tickerItems.map((tk, idx) => (
-                    <span key={idx} className="px-8 flex items-center gap-2">
-                      {idx > 0 && <span className="w-1.5 h-1.5 rounded-full bg-ag-gold"></span>}
+                    <span key={idx} className="px-8 flex items-center gap-1.5">
+                      {idx > 0 && <span className="w-1.5 h-1.5 rounded-full bg-ag-gold shrink-0"></span>}
                       {tk.text}
                     </span>
                   ))}
@@ -297,7 +309,7 @@ export default function Navbar() {
             {(!settings || settings.showCategoryBar) && (
               <div className="pt-3 grid grid-cols-3 gap-3">
                 {categories.map((cat) => (
-                  <Link key={cat.label} href={cat.href || `/products?category=${(cat as any).id || cat.label.toLowerCase().replace(/\s+/g, "-")}`}
+                  <Link key={cat.label} href={cat.href || `/${cat.label.toLowerCase().replace(/\s+/g, "-")}`}
                     className="flex flex-col items-center gap-1 p-2 bg-ag-bg-alt rounded text-ag-text-muted hover:text-ag-primary text-center"
                     onClick={() => setIsMenuOpen(false)}
                   >

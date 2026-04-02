@@ -120,55 +120,65 @@ export default async function FeaturedProductsGrid({ categories = [] }: { catego
               Every Sport, <em className="text-ag-gold font-normal italic">Elevated.</em>
             </h2>
           </div>
-          <Link href="/products" className="text-[11px] font-body uppercase tracking-widest text-ag-text-muted hover:text-ag-primary flex items-center gap-1 transition-colors">
-            View All <span aria-hidden>→</span>
-          </Link>
         </div>
 
-        {/* Masonry Grid Layout */}
-        <div className="grid grid-cols-12 gap-4 md:gap-5 auto-rows-[200px] md:auto-rows-[250px]">
+        {/* Masonry Grid Layout (First 6) */}
+        <div className="grid grid-cols-12 gap-4 md:gap-5 auto-rows-[200px] md:auto-rows-[250px] mb-4 md:mb-5">
           {items[0] && (
             <PortfolioCard 
-              item={{ ...items[0], image: items[0].imageUrl || "/images/sports/surface_sports.png", desc: items[0].description || "Synthetic turf, running tracks & multi-sport courts", href: `/products?category=${encodeURIComponent(items[0].label)}`, count: "12 products" }} 
+              item={{ ...items[0], image: items[0].imageUrl || "/images/sports/surface_sports.png", desc: items[0].description || "Synthetic turf, running tracks & multi-sport courts", href: items[0].href || `/${items[0].label.toLowerCase().replace(/\s+/g, "-")}`, count: "12 products" }} 
               className="col-span-12 md:col-span-6 row-span-2 h-auto" 
             />
           )}
 
           {items[1] && (
             <PortfolioCard 
-              item={{ ...items[1], image: items[1].imageUrl || "/images/sports/water_sports.png", desc: items[1].description || "Kayaking lanes, pool decking & aquatic gear", href: `/products?category=${encodeURIComponent(items[1].label)}`, count: "8 products" }} 
+              item={{ ...items[1], image: items[1].imageUrl || "/images/sports/water_sports.png", desc: items[1].description || "Kayaking lanes, pool decking & aquatic gear", href: items[1].href || `/${items[1].label.toLowerCase().replace(/\s+/g, "-")}`, count: "8 products" }} 
               className="col-span-12 sm:col-span-6 md:col-span-6 row-span-1 h-[200px] md:h-auto" 
             />
           )}
 
           {items[2] && (
             <PortfolioCard 
-              item={{ ...items[2], image: items[2].imageUrl || "/images/sports/small_sports.png", desc: items[2].description || "Badminton, table tennis & squash setups", href: `/products?category=${encodeURIComponent(items[2].label)}`, count: "15 products" }} 
+              item={{ ...items[2], image: items[2].imageUrl || "/images/sports/small_sports.png", desc: items[2].description || "Badminton, table tennis & squash setups", href: items[2].href || `/${items[2].label.toLowerCase().replace(/\s+/g, "-")}`, count: "15 products" }} 
               className="col-span-6 md:col-span-3 row-span-1 h-[200px] md:h-auto" 
             />
           )}
 
           {items[3] && (
             <PortfolioCard 
-              item={{ ...items[3], image: items[3].imageUrl || "/images/sports/budget_sports.png", desc: items[3].description || "Cost-effective solutions for schools & communities", href: `/products?category=${encodeURIComponent(items[3].label)}`, count: "20 products" }} 
+              item={{ ...items[3], image: items[3].imageUrl || "/images/sports/budget_sports.png", desc: items[3].description || "Cost-effective solutions for schools & communities", href: items[3].href || `/${items[3].label.toLowerCase().replace(/\s+/g, "-")}`, count: "20 products" }} 
               className="col-span-6 md:col-span-3 row-span-1 h-[200px] md:h-auto" 
             />
           )}
 
           {items[4] && (
             <PortfolioCard 
-              item={{ ...items[4], image: items[4].imageUrl || "/images/sports/adventure_sports.png", desc: items[4].description || "Climbing walls, rope courses & obstacle setups", href: `/products?category=${encodeURIComponent(items[4].label)}`, count: "7 products" }} 
+              item={{ ...items[4], image: items[4].imageUrl || "/images/sports/adventure_sports.png", desc: items[4].description || "Climbing walls, rope courses & obstacle setups", href: items[4].href || `/${items[4].label.toLowerCase().replace(/\s+/g, "-")}`, count: "7 products" }} 
               className="col-span-12 md:col-span-8 row-span-1 h-[200px] md:h-auto" 
             />
           )}
 
           {items[5] && (
             <PortfolioCard 
-              item={{ ...items[5], image: items[5].imageUrl || "/images/sports/play_zones.png", desc: items[5].description || "Premium children's play areas & soft surfaces", href: `/products?category=${encodeURIComponent(items[5].label)}`, count: "10 products" }} 
+              item={{ ...items[5], image: items[5].imageUrl || "/images/sports/play_zones.png", desc: items[5].description || "Premium children's play areas & soft surfaces", href: items[5].href || `/${items[5].label.toLowerCase().replace(/\s+/g, "-")}`, count: "10 products" }} 
               className="col-span-12 md:col-span-4 row-span-1 h-[200px] md:h-auto" 
             />
           )}
         </div>
+
+        {/* Additional items (7+) */}
+        {categories.length > 6 && (
+          <div className="grid grid-cols-12 gap-4 md:gap-5 auto-rows-[200px] md:auto-rows-[250px]">
+            {categories.slice(6).map((cat, idx) => (
+              <PortfolioCard 
+                key={cat.id}
+                item={{ ...cat, image: cat.imageUrl || "/images/sports/surface_sports.png", desc: cat.description || "Expert solutions for professional sports infrastructure.", href: cat.href || `/${cat.label.toLowerCase().replace(/\s+/g, "-")}`, count: "View Products" }} 
+                className="col-span-12 sm:col-span-6 md:col-span-4 row-span-1 h-[200px] md:h-auto" 
+              />
+            ))}
+          </div>
+        )}
 
       </div>
     </section>
