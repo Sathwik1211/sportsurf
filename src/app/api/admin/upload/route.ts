@@ -33,8 +33,8 @@ export async function POST(req: NextRequest) {
     const fileUrl = `/uploads/${fileName}`;
 
     return NextResponse.json({ url: fileUrl });
-  } catch (error) {
-    console.error("Upload error:", error);
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+  } catch (error: any) {
+    console.error("CRITICAL UPLOAD ERROR:", error);
+    return NextResponse.json({ error: error.message || "Upload failed" }, { status: 500 });
   }
 }
