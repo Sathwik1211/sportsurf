@@ -1147,14 +1147,24 @@ export default function AdminDashboard() {
                                                       </div>
                                                    </div>
                                                 </div>
-                                                <ImageUpload label="Hero Background Media" value={data.imageUrl || ""} onChange={(v) => {
-                                                   const newHeroes = [...heroes];
-                                                   const idx = newHeroes.findIndex(h => h.id === data.id);
-                                                   if (idx !== -1) {
-                                                      newHeroes[idx].imageUrl = v;
-                                                      setHeroes(newHeroes);
-                                                   }
-                                                }} />
+                                                <div className="grid grid-cols-2 gap-4">
+                                                   <ImageUpload label="Hero Background Media" value={data.imageUrl || ""} onChange={(v) => {
+                                                      const newHeroes = [...heroes];
+                                                      const idx = newHeroes.findIndex(h => h.id === data.id);
+                                                      if (idx !== -1) {
+                                                         newHeroes[idx].imageUrl = v;
+                                                         setHeroes(newHeroes);
+                                                      }
+                                                   }} />
+                                                   <ImageUpload label="Hero Background Video" value={data.videoUrl || ""} onChange={(v) => {
+                                                      const newHeroes = [...heroes];
+                                                      const idx = newHeroes.findIndex(h => h.id === data.id);
+                                                      if (idx !== -1) {
+                                                         newHeroes[idx].videoUrl = v;
+                                                         setHeroes(newHeroes);
+                                                      }
+                                                   }} />
+                                                </div>
                                                 <button onClick={async () => {
                                                    const res = await fetch(data.id ? `/api/admin/hero/${data.id}` : "/api/admin/hero", { method: data.id ? "PUT" : "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
                                                    if (res.ok) {
@@ -1976,7 +1986,10 @@ export default function AdminDashboard() {
             <Field label="Page" name="page" value={formData.page || ""} onChange={handleFormChange} required />
             <Field label="Title" name="title" value={formData.title || ""} onChange={handleFormChange} required />
             <Field label="Subtitle" name="subtitle" value={formData.subtitle || ""} onChange={handleFormChange} textarea />
-            <ImageUpload label="Hero Media Image" value={formData.imageUrl || ""} onChange={(v) => setFormData(p => ({ ...p, imageUrl: v }))} />
+            <div className="grid grid-cols-2 gap-4">
+               <ImageUpload label="Hero Media Image" value={formData.imageUrl || ""} onChange={(v) => setFormData(p => ({ ...p, imageUrl: v }))} />
+               <ImageUpload label="Hero Background Video" value={formData.videoUrl || ""} onChange={(v) => setFormData(p => ({ ...p, videoUrl: v }))} />
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <Field label="CTA Text" name="ctaText" value={formData.ctaText || ""} onChange={handleFormChange} />
               <Field label="CTA Link" name="ctaLink" value={formData.ctaLink || ""} onChange={handleFormChange} />
