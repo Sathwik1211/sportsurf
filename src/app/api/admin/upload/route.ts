@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     if (!cloudName || !apiKey || !apiSecret) {
       const missing = { cloudName: !!cloudName, apiKey: !!apiKey, apiSecret: !!apiSecret };
       console.error("CLOUD_UPLOAD_ERROR: Missing:", missing);
-      
+
       // Fallback: local storage for local dev environment ONLY
       if (process.env.NODE_ENV === "development") {
         console.log("DEV_MODE: Using local storage fallback since Cloudinary keys are missing.");
@@ -27,17 +27,17 @@ export async function POST(req: NextRequest) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
         const uploadDir = join(process.cwd(), "public", "uploads");
-        try { await mkdir(uploadDir, { recursive: true }); } catch {}
+        try { await mkdir(uploadDir, { recursive: true }); } catch { }
         const uniqueId = Date.now() + "-" + Math.random().toString(36).substring(2, 9);
         const ext = file.name.split(".").pop();
         const fileName = `${uniqueId}.${ext}`;
         await writeFile(join(uploadDir, fileName), buffer);
         return NextResponse.json({ url: `/uploads/${fileName}` });
       }
-      
-      return NextResponse.json({ 
+
+      return NextResponse.json({
         error: "Cloud storage credentials not configured",
-        debug: missing 
+        debug: missing
       }, { status: 500 });
     }
 
@@ -73,18 +73,18 @@ export async function POST(req: NextRequest) {
     });
 
     const response = NextResponse.json({ url: result.secure_url });
-    
+
     // Add CORS headers to allow Vercel to talk to Railway
     response.headers.set("Access-Control-Allow-Origin", "*");
     response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
     response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    
+
     return response;
   } catch (error: any) {
     console.error("CRITICAL UPLOAD API ERROR:", error);
-    const errorResponse = NextResponse.json({ 
+    const errorResponse = NextResponse.json({
       error: error.message || "Upload failed",
-      cloudinary_error: error 
+      cloudinary_error: error
     }, { status: 500 });
 
     errorResponse.headers.set("Access-Control-Allow-Origin", "*");
