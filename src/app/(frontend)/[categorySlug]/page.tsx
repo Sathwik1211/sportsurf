@@ -358,7 +358,7 @@ function CategoryContent() {
           {activeSport !== 'all' && (
               <>
               <ChevronRight size={10} />
-              <span className="text-ag-primary font-bold">{sportsInCategory.find(s => s.id === activeSport)?.name || activeSport}</span>
+              <span className="text-ag-primary font-bold">{sportsInCategory.find((s: any) => s.id === activeSport)?.name || activeSport}</span>
               </>
           )}
         </div>
