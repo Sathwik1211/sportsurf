@@ -1,12 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
@@ -16,22 +10,39 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    // Ensure Cloudinary is configured
-    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-      console.error("Cloudinary env vars missing, falling back to local storage");
-      // Fallback: local storage for dev environment
-      const { writeFile, mkdir } = await import("fs/promises");
-      const { join } = await import("path");
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      const uploadDir = join(process.cwd(), "public", "uploads");
-      try { await mkdir(uploadDir, { recursive: true }); } catch {}
-      const uniqueId = Date.now() + "-" + Math.random().toString(36).substring(2, 9);
-      const ext = file.name.split(".").pop();
-      const fileName = `${uniqueId}.${ext}`;
-      await writeFile(join(uploadDir, fileName), buffer);
-      return NextResponse.json({ url: `/uploads/${fileName}` });
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+    // Check for missing credentials explicitly
+    if (!cloudName || !apiKey || !apiSecret) {
+      console.error("CLOUD_UPLOAD_ERROR: Cloudinary variables are missing in Vercel/Railway environment.");
+      console.log("Missing:", { cloudName: !!cloudName, apiKey: !!apiKey, apiSecret: !!apiSecret });
+      
+      // Fallback: local storage for local dev environment
+      if (process.env.NODE_ENV === "development") {
+        const { writeFile, mkdir } = await import("fs/promises");
+        const { join } = await import("path");
+        const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        const uploadDir = join(process.cwd(), "public", "uploads");
+        try { await mkdir(uploadDir, { recursive: true }); } catch {}
+        const uniqueId = Date.now() + "-" + Math.random().toString(36).substring(2, 9);
+        const ext = file.name.split(".").pop();
+        const fileName = `${uniqueId}.${ext}`;
+        await writeFile(join(uploadDir, fileName), buffer);
+        return NextResponse.json({ url: `/uploads/${fileName}` });
+      }
+      
+      return NextResponse.json({ error: "Cloud storage credentials not configured" }, { status: 500 });
     }
+
+    // Configure Cloudinary inside the handler
+    cloudinary.config({
+      cloud_name: cloudName,
+      api_key: apiKey,
+      api_secret: apiSecret,
+    });
 
     // Upload to Cloudinary
     const bytes = await file.arrayBuffer();
@@ -43,10 +54,15 @@ export async function POST(req: NextRequest) {
         {
           folder: "sportsurf",
           resource_type: resourceType,
+          transformation: resourceType === 'image' ? [{ quality: 'auto' }] : []
         },
         (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
+          if (error) {
+            console.error("CLOUDINARY_STREAM_ERROR:", error);
+            reject(error);
+          } else {
+            resolve(result);
+          }
         }
       );
       uploadStream.end(buffer);
@@ -54,7 +70,10 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url: result.secure_url });
   } catch (error: any) {
-    console.error("CRITICAL UPLOAD ERROR:", error);
-    return NextResponse.json({ error: error.message || "Upload failed" }, { status: 500 });
+    console.error("CRITICAL UPLOAD API ERROR:", error);
+    return NextResponse.json({ 
+      error: error.message || "Upload failed", 
+      details: process.env.NODE_ENV === "development" ? error.stack : undefined 
+    }, { status: 500 });
   }
 }
