@@ -19,6 +19,22 @@ export async function POST(req: NextRequest) {
       const missing = { cloudName: !!cloudName, apiKey: !!apiKey, apiSecret: !!apiSecret };
       console.error("CLOUD_UPLOAD_ERROR: Missing:", missing);
       
+      // Fallback: local storage for local dev environment ONLY
+      if (process.env.NODE_ENV === "development") {
+        console.log("DEV_MODE: Using local storage fallback since Cloudinary keys are missing.");
+        const { writeFile, mkdir } = await import("fs/promises");
+        const { join } = await import("path");
+        const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        const uploadDir = join(process.cwd(), "public", "uploads");
+        try { await mkdir(uploadDir, { recursive: true }); } catch {}
+        const uniqueId = Date.now() + "-" + Math.random().toString(36).substring(2, 9);
+        const ext = file.name.split(".").pop();
+        const fileName = `${uniqueId}.${ext}`;
+        await writeFile(join(uploadDir, fileName), buffer);
+        return NextResponse.json({ url: `/uploads/${fileName}` });
+      }
+      
       return NextResponse.json({ 
         error: "Cloud storage credentials not configured",
         debug: missing 
