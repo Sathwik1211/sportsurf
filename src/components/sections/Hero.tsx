@@ -21,9 +21,10 @@ export default function Hero({ hero }: { hero?: any }) {
         />
       ) : (
         <img
-          src={data.imageUrl || "/images/hero_indian_arena.png"}
+          src={data.imageUrl && data.imageUrl.startsWith("/uploads/") ? data.imageUrl : (data.imageUrl?.startsWith("http") ? data.imageUrl : "/images/hero_indian_arena.png")}
           alt="Premium Indian Sports Infrastructure"
           className="absolute inset-0 w-full h-full object-cover object-center"
+          onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/images/hero_indian_arena.png"; }}
         />
       )}
 
