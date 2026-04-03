@@ -72,12 +72,31 @@ export async function POST(req: NextRequest) {
       uploadStream.end(buffer);
     });
 
-    return NextResponse.json({ url: result.secure_url });
+    const response = NextResponse.json({ url: result.secure_url });
+    
+    // Add CORS headers to allow Vercel to talk to Railway
+    response.headers.set("Access-Control-Allow-Origin", "*");
+    response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+    response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    
+    return response;
   } catch (error: any) {
     console.error("CRITICAL UPLOAD API ERROR:", error);
-    return NextResponse.json({ 
+    const errorResponse = NextResponse.json({ 
       error: error.message || "Upload failed",
       cloudinary_error: error 
     }, { status: 500 });
+
+    errorResponse.headers.set("Access-Control-Allow-Origin", "*");
+    return errorResponse;
   }
+}
+
+// Add OPTIONS handler for CORS preflight
+export async function OPTIONS() {
+  const response = new NextResponse(null, { status: 204 });
+  response.headers.set("Access-Control-Allow-Origin", "*");
+  response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+  response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  return response;
 }

@@ -162,7 +162,8 @@ function ImageUpload({ label, value, onChange, multiple = false }: { label: stri
         for (let i = 0; i < files.length; i++) {
             const formData = new FormData();
             formData.append("file", files[i]);
-            const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+            const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
+            const res = await fetch(`${backendUrl}/api/admin/upload`, { method: "POST", body: formData });
             if (res.ok) {
                 const data = await res.json();
                 if (multiple) {
