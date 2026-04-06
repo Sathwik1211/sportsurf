@@ -6,6 +6,8 @@ import FinalCTA from "@/components/sections/FinalCTA";
 import FeaturedProjects from "@/components/sections/FeaturedProjects";
 import ProductGallery from "@/components/sections/ProductGallery";
 
+import BackButton from "@/components/navigation/BackButton";
+
 const DynamicIcon = ({ name, size = 20, className = "" }: { name: string; size?: number; className?: string }) => {
    const IconComponent = (LucideIcons as any)[name];
    if (!IconComponent) return <LucideIcons.HelpCircle size={size} className={className} />;
@@ -127,13 +129,7 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
                   <span className="text-ag-primary font-semibold truncate max-w-[200px]">{product.name}</span>
                </div>
                
-               <Link 
-                  href="/products" 
-                  className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-ag-primary transition-colors group"
-               >
-                  <LucideIcons.MoveLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> 
-                  Back to Products
-               </Link>
+               <BackButton label="Back" />
             </div>
          </div>
 
