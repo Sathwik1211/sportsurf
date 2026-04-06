@@ -2,18 +2,42 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Mail, ArrowLeft, KeyRound, CheckCircle2 } from "lucide-react";
+import { Mail, ArrowLeft, KeyRound, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function ForgotPasswordPage() {
+  const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        setError(data.error || "Something went wrong. Please try again.");
+      } else {
+        setIsSubmitted(true);
+      }
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="pt-12     bg-ag-bg min-h-screen  pb-32">
+    <div className="pt-12 bg-ag-bg min-h-screen pb-32">
       <div className="container-retail">
         <div className="max-w-md mx-auto">
           {!isSubmitted ? (
@@ -26,29 +50,41 @@ export default function ForgotPasswordPage() {
                   Reset <span className="text-ag-primary">Password</span>
                 </h1>
                 <p className="font-body text-ag-text-muted mt-4 text-sm leading-relaxed">
-                  Enter your registered work email and we&apos;ll send you instructions to reset your password.
+                  Enter your registered email and we&apos;ll send you a secure link to reset your password.
                 </p>
               </div>
 
               <div className="retail-card p-8 md:p-10">
+                {error && (
+                  <div className="bg-red-500/10 border border-red-500/30 text-red-600 rounded-lg p-4 mb-6 text-center text-xs font-bold font-body flex items-center justify-center gap-2">
+                    <AlertCircle size={14} /> {error}
+                  </div>
+                )}
+
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <label className="font-body font-bold text-ag-text text-[11px] uppercase tracking-widest ml-1">Work Email</label>
+                    <label className="font-body font-bold text-ag-text text-[11px] uppercase tracking-widest ml-1">Email Address</label>
                     <div className="relative">
                       <div className="absolute left-4 top-1/2 -translate-y-1/2 text-ag-text-muted">
                         <Mail size={18} />
                       </div>
-                      <input 
+                      <input
                         required
-                        type="email" 
-                        placeholder="rahul@institution.com"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="name@institution.com"
                         className="w-full bg-ag-bg-alt border border-ag-border rounded-lg py-4 pl-12 pr-6 text-ag-text font-body text-sm focus:outline-none focus:ring-2 focus:ring-ag-primary/10 transition-all"
                       />
                     </div>
                   </div>
 
-                  <button type="submit" className="btn btn-primary w-full py-5 text-sm uppercase tracking-widest shadow-lg shadow-ag-primary/20">
-                    Send Reset Link
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="btn btn-primary w-full py-5 text-sm uppercase tracking-widest shadow-lg shadow-ag-primary/20"
+                  >
+                    {loading ? "Sending..." : "Send Reset Link"}
                   </button>
                 </form>
 
@@ -67,7 +103,7 @@ export default function ForgotPasswordPage() {
                </div>
                <h2 className="font-heading font-black text-ag-text text-3xl uppercase tracking-tighter">Check Your Email</h2>
                <p className="font-body text-ag-text-muted max-w-xs mx-auto text-sm leading-relaxed">
-                  We&apos;ve sent a password reset link to your email address. Please check your inbox and spam folder.
+                  If an account exists for <strong>{email}</strong>, a reset link has been sent. Please check your inbox and spam folder. The link expires in 1 hour.
                </p>
                <div className="pt-6">
                  <Link href="/login" className="btn btn-outline border-ag-primary text-ag-primary px-8 py-3 uppercase tracking-widest text-xs">
