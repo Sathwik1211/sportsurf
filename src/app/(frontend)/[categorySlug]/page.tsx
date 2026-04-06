@@ -186,16 +186,19 @@ const CollabBlocks = ({ category, collaborations = [] }: { category: any; collab
         </h3>
         
         {/* Partnership Card */}
-        <div className="relative group overflow-hidden rounded-2xl bg-ag-text p-7 text-left">
+        <div 
+           className="relative group overflow-hidden rounded-2xl p-7 text-left"
+           style={{ backgroundColor: category?.collabBackgroundColor || '#0f172a' }}
+        >
             <div className="absolute top-0 right-0 p-4 opacity-10">
-                <Handshake size={56} className="text-white" />
+                <Handshake size={56} style={{ color: category?.collabTextColor || '#ffffff' }} />
             </div>
             <div className="relative z-10">
-                <span className="text-ag-gold text-[10px] font-black uppercase tracking-[0.2em] mb-3 block">{category?.collabTitle || 'Partner With Us'}</span>
-                <h4 className="text-white text-xl font-heading font-black uppercase tracking-tighter leading-none mb-4 whitespace-pre-line">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] mb-3 block" style={{ color: category?.collabTextColor || '#eab308', opacity: 0.8 }}>{category?.collabTitle || 'Partner With Us'}</span>
+                <h4 className="text-xl font-heading font-black uppercase tracking-tighter leading-none mb-4 whitespace-pre-line" style={{ color: category?.collabTextColor || '#ffffff' }}>
                     {category?.collabSubtitle || 'Join the SportSurf \n Elite Network'}
                 </h4>
-                <p className="text-white/50 text-[11px] font-body mb-5 leading-relaxed max-w-[200px]">
+                <p className="text-[11px] font-body mb-5 leading-relaxed max-w-[200px]" style={{ color: category?.collabTextColor || '#ffffff', opacity: 0.6 }}>
                     {category?.collabDescription || 'We are looking for strategic partners in infrastructure and technology.'}
                 </p>
                 <Link href={category?.collabCtaLink || '/contact'} className="inline-flex items-center gap-2 bg-ag-gold text-white px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-ag-text transition-all">

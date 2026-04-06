@@ -1088,7 +1088,7 @@ export default function AdminDashboard() {
                                                   }} />
                                                </div>
                                                
-                                               {!['surface-sports', 'water-sports', 'small-sports', 'budget-sports', 'sports-academies', 'play-zones', 'adventure-sports', 'challenge-courses', 'talent-scout-clubs'].includes(slug) && (
+                                               {!['surface-sports', 'water-sports', 'small-sports', 'budget-sports', 'sports-academies'].includes(slug) && (
                                                <div className="bg-amber-50/30 p-5 rounded-3xl border border-amber-100/50 space-y-4">
                                                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-600 flex items-center gap-2">
                                                       <Star size={10} /> Specialized Hero Grid (3-Image Layout)
