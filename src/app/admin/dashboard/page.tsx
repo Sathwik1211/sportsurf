@@ -70,6 +70,7 @@ interface CategoryItem {
   logoUrl?: string;
   collabBackgroundColor?: string;
   collabTextColor?: string;
+  collabTitle?: string;
   collabSubtitle?: string;
   collabDescription?: string;
   collabCtaText?: string;
@@ -1125,7 +1126,6 @@ export default function AdminDashboard() {
                                                </div>
                                                )}
 
-                                               {!['surface-sports', 'water-sports', 'small-sports', 'budget-sports', 'sports-academies', 'play-zones', 'adventure-sports', 'challenge-courses', 'talent-scout-clubs'].includes(slug) && (
                                                <div className="bg-emerald-50/30 p-5 rounded-3xl border border-emerald-100/50 space-y-4">
                                                   <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 flex items-center gap-2">
                                                      <Handshake size={10} /> Partner Section Branding
@@ -1169,6 +1169,29 @@ export default function AdminDashboard() {
                                                     </div>
                                                   </div>
                                                   <div className="grid grid-cols-2 gap-4">
+                                                     <Field label="Title" name="collabTitle" value={cat.collabTitle || ""} onChange={(e) => {
+                                                        const newCats = [...categories];
+                                                        const idx = newCats.findIndex(c => c.id === cat.id);
+                                                        newCats[idx].collabTitle = e.target.value;
+                                                        setCategories(newCats);
+                                                     }} />
+                                                     <Field label="Subtitle" name="collabSubtitle" value={cat.collabSubtitle || ""} onChange={(e) => {
+                                                        const newCats = [...categories];
+                                                        const idx = newCats.findIndex(c => c.id === cat.id);
+                                                        newCats[idx].collabSubtitle = e.target.value;
+                                                        setCategories(newCats);
+                                                     }} />
+                                                  </div>
+                                                  <div>
+                                                     <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 px-1">Description</label>
+                                                     <textarea value={cat.collabDescription || ""} onChange={(e) => {
+                                                        const newCats = [...categories];
+                                                        const idx = newCats.findIndex(c => c.id === cat.id);
+                                                        newCats[idx].collabDescription = e.target.value;
+                                                        setCategories(newCats);
+                                                     }} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 font-medium min-h-[80px]" />
+                                                  </div>
+                                                  <div className="grid grid-cols-2 gap-4">
                                                      <Field label="Button Text" name="collabCtaText" value={cat.collabCtaText || ""} onChange={(e) => {
                                                         const newCats = [...categories];
                                                         const idx = newCats.findIndex(c => c.id === cat.id);
@@ -1183,7 +1206,7 @@ export default function AdminDashboard() {
                                                      }} />
                                                   </div>
                                                </div>
-                                               )}
+
 
                                                <div className="grid grid-cols-2 gap-4">
                                                   <div>
