@@ -14,7 +14,7 @@ type TabGroup = string;
 type Tab = string;
 
 interface StatsData { userCount: number; productCount: number; projectCount: number; testimonialCount: number }
-interface HeroItem { id: string; page: string; title: string; subtitle?: string; imageUrl?: string; videoUrl?: string; heroTag?: string; ctaText?: string; ctaLink?: string; cta2Text?: string; cta2Link?: string; textColor: string; overlayOpacity: number }
+interface HeroItem { id: string; page: string; title: string; subtitle?: string; imageUrl?: string; videoUrl?: string; logoUrl?: string; heroTag?: string; ctaText?: string; ctaLink?: string; cta2Text?: string; cta2Link?: string; textColor: string; overlayOpacity: number }
 interface NavItem { id: string; label: string; href: string; order: number }
 interface ProductItem { 
   id: string; 
@@ -36,6 +36,14 @@ interface ProductItem {
   servicesJson?: string;
   subCategoryId?: string;
   subCategory?: { id: string; name: string };
+  ctaText?: string;
+  ctaLink?: string;
+  brochureText?: string;
+  brochureLink?: string;
+  warrantyText?: string;
+  standardsText?: string;
+  specsTitle?: string;
+  whyInvestTitle?: string;
 }
 interface SubCategoryItem { id: string; name: string; categoryId: string; order: number; category?: { label: string } }
 interface ProjectItem { id: string; name: string; city: string; state: string; surface: string; area: string; year: string; imageUrl?: string }
@@ -59,6 +67,13 @@ interface CategoryItem {
   imageLabel2?: string;
   imageUrl3?: string;
   imageLabel3?: string;
+  logoUrl?: string;
+  collabBackgroundColor?: string;
+  collabTextColor?: string;
+  collabSubtitle?: string;
+  collabDescription?: string;
+  collabCtaText?: string;
+  collabCtaLink?: string;
 }
 interface UserItem { id: string; name?: string; email?: string; role: string; emailVerified?: string }
 interface CollaborationItem { 
@@ -449,7 +464,10 @@ export default function AdminDashboard() {
       collabSubtitle: formData.collabSubtitle,
       collabDescription: formData.collabDescription,
       collabCtaText: formData.collabCtaText,
-      collabCtaLink: formData.collabCtaLink
+      collabCtaLink: formData.collabCtaLink,
+      logoUrl: formData.logoUrl,
+      collabBackgroundColor: formData.collabBackgroundColor,
+      collabTextColor: formData.collabTextColor
     };
     const res = await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     if (res.ok) {
@@ -1018,123 +1036,195 @@ export default function AdminDashboard() {
                                                      }} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm h-32 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 font-medium" />
                                                </div>
                                                <div className="grid grid-cols-2 gap-4">
-                                                   <div>
-                                                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 px-1">Hero Background Color (Hex)</label>
-                                                      <div className="relative">
-                                                         <input type="text" value={cat.backgroundColor || "#fafbff"} onChange={(e) => {
+                                                  <div>
+                                                     <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 px-1">Hero Background Color (Hex)</label>
+                                                     <div className="relative">
+                                                        <input type="text" value={cat.backgroundColor || "#fafbff"} onChange={(e) => {
+                                                           const newCats = [...categories];
+                                                           const idx = newCats.findIndex(c => c.id === cat.id);
+                                                           newCats[idx].backgroundColor = e.target.value;
+                                                           setCategories(newCats);
+                                                        }} className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 font-bold" />
+                                                        <input type="color" value={cat.backgroundColor || "#fafbff"} onChange={(e) => {
+                                                           const newCats = [...categories];
+                                                           const idx = newCats.findIndex(c => c.id === cat.id);
+                                                           newCats[idx].backgroundColor = e.target.value;
+                                                           setCategories(newCats);
+                                                        }} className="absolute left-3 top-1/2 -translate-y-1/2 w-7 h-7 opacity-0 cursor-pointer z-10" title="Choose color" />
+                                                        <div className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded border border-slate-200 pointer-events-none" style={{backgroundColor: cat.backgroundColor || "#fafbff"}}></div>
+                                                     </div>
+                                                  </div>
+                                                  <div>
+                                                     <ImageUpload label="Page Header Logo (Override)" value={cat.logoUrl || ""} onChange={(v) => {
+                                                         const newCats = [...categories];
+                                                         const idx = newCats.findIndex(c => c.id === cat.id);
+                                                         newCats[idx].logoUrl = v;
+                                                         setCategories(newCats);
+                                                     }} />
+                                                  </div>
+                                               </div>
+                                               <div>
+                                                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 px-1">Top Badge / Tag</label>
+                                                  <input type="text" value={cat.heroTag || ""} onChange={(e) => {
+                                                     const newCats = [...categories];
+                                                     const idx = newCats.findIndex(c => c.id === cat.id);
+                                                     newCats[idx].heroTag = e.target.value;
+                                                     setCategories(newCats);
+                                                  }} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 font-bold" placeholder="e.g. Infrastructure" />
+                                               </div>
+                                               <div className="grid grid-cols-2 gap-4">
+                                                  <ImageUpload label="Background Banner Image" value={cat.imageUrl || ""} onChange={(v) => {
+                                                      const newCats = [...categories];
+                                                      const idx = newCats.findIndex(c => c.id === cat.id);
+                                                      newCats[idx].imageUrl = v;
+                                                      setCategories(newCats);
+                                                  }} />
+                                                  <ImageUpload label="Hero Background Video" value={cat.videoUrl || ""} onChange={(v) => {
+                                                      const newCats = [...categories];
+                                                      const idx = newCats.findIndex(c => c.id === cat.id);
+                                                      newCats[idx].videoUrl = v;
+                                                      setCategories(newCats);
+                                                  }} />
+                                               </div>
+                                               
+                                               {!['surface-sports', 'water-sports', 'small-sports', 'budget-sports', 'sports-academies'].includes(slug) && (
+                                               <div className="bg-amber-50/30 p-5 rounded-3xl border border-amber-100/50 space-y-4">
+                                                   <span className="text-[10px] font-black uppercase tracking-widest text-amber-600 flex items-center gap-2">
+                                                      <Star size={10} /> Specialized Hero Grid (3-Image Layout)
+                                                   </span>
+                                                   <div className="grid grid-cols-2 gap-4">
+                                                      <div className="space-y-4">
+                                                         <ImageUpload label="Hero Grid Image 2" value={cat.imageUrl2 || ""} onChange={(v) => {
                                                             const newCats = [...categories];
                                                             const idx = newCats.findIndex(c => c.id === cat.id);
-                                                            newCats[idx].backgroundColor = e.target.value;
+                                                            newCats[idx].imageUrl2 = v;
                                                             setCategories(newCats);
-                                                         }} className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 font-bold" />
-                                                         <input type="color" value={cat.backgroundColor || "#fafbff"} onChange={(e) => {
+                                                         }} />
+                                                         <input type="text" value={cat.imageLabel2 || ""} onChange={(e) => {
                                                             const newCats = [...categories];
                                                             const idx = newCats.findIndex(c => c.id === cat.id);
-                                                            newCats[idx].backgroundColor = e.target.value;
+                                                            newCats[idx].imageLabel2 = e.target.value;
                                                             setCategories(newCats);
-                                                         }} className="absolute left-3 top-1/2 -translate-y-1/2 w-7 h-7 opacity-0 cursor-pointer z-10" title="Choose color" />
-                                                         <div className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded border border-slate-200 pointer-events-none" style={{backgroundColor: cat.backgroundColor || "#fafbff"}}></div>
+                                                         }} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400" placeholder="Grid Label 2 (e.g. Experience)" />
+                                                      </div>
+                                                      <div className="space-y-4">
+                                                         <ImageUpload label="Hero Grid Image 3" value={cat.imageUrl3 || ""} onChange={(v) => {
+                                                            const newCats = [...categories];
+                                                            const idx = newCats.findIndex(c => c.id === cat.id);
+                                                            newCats[idx].imageUrl3 = v;
+                                                            setCategories(newCats);
+                                                         }} />
+                                                         <input type="text" value={cat.imageLabel3 || ""} onChange={(e) => {
+                                                            const newCats = [...categories];
+                                                            const idx = newCats.findIndex(c => c.id === cat.id);
+                                                            newCats[idx].imageLabel3 = e.target.value;
+                                                            setCategories(newCats);
+                                                         }} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400" placeholder="Grid Label 3 (e.g. Technical)" />
                                                       </div>
                                                    </div>
-                                                   <div>
-                                                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 px-1">Top Badge / Tag</label>
-                                                      <input type="text" value={cat.heroTag || ""} onChange={(e) => {
-                                                         const newCats = [...categories];
-                                                         const idx = newCats.findIndex(c => c.id === cat.id);
-                                                         newCats[idx].heroTag = e.target.value;
-                                                         setCategories(newCats);
-                                                      }} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 font-bold" placeholder="e.g. Infrastructure" />
-                                                   </div>
-                                                </div>
-                                                <div className="grid grid-cols-2 gap-4">
-                                                   <ImageUpload label="Background Banner Image" value={cat.imageUrl || ""} onChange={(v) => {
-                                                       const newCats = [...categories];
-                                                       const idx = newCats.findIndex(c => c.id === cat.id);
-                                                       newCats[idx].imageUrl = v;
-                                                       setCategories(newCats);
-                                                   }} />
-                                                   <ImageUpload label="Hero Background Video" value={cat.videoUrl || ""} onChange={(v) => {
-                                                       const newCats = [...categories];
-                                                       const idx = newCats.findIndex(c => c.id === cat.id);
-                                                       newCats[idx].videoUrl = v;
-                                                       setCategories(newCats);
-                                                   }} />
-                                                </div>
-                                                <div className="bg-amber-50/30 p-5 rounded-3xl border border-amber-100/50 space-y-4">
-                                                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-600 flex items-center gap-2">
-                                                       <Star size={10} /> Specialized Hero Grid (3-Image Layout)
-                                                    </span>
-                                                    <div className="grid grid-cols-2 gap-4">
-                                                       <div className="space-y-4">
-                                                          <ImageUpload label="Hero Grid Image 2" value={cat.imageUrl2 || ""} onChange={(v) => {
+                                               </div>
+                                               )}
+
+                                               {!['small-sports', 'budget-sports'].includes(slug) && (
+                                               <div className="bg-emerald-50/30 p-5 rounded-3xl border border-emerald-100/50 space-y-4">
+                                                  <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 flex items-center gap-2">
+                                                     <Handshake size={10} /> Partner Section Branding
+                                                  </span>
+                                                  <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                       <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 px-1">Collab Background Color</label>
+                                                       <div className="relative">
+                                                          <input type="text" value={cat.collabBackgroundColor || "#0f172a"} onChange={(e) => {
                                                              const newCats = [...categories];
                                                              const idx = newCats.findIndex(c => c.id === cat.id);
-                                                             newCats[idx].imageUrl2 = v;
+                                                             newCats[idx].collabBackgroundColor = e.target.value;
                                                              setCategories(newCats);
-                                                          }} />
-                                                          <input type="text" value={cat.imageLabel2 || ""} onChange={(e) => {
+                                                          }} className="w-full bg-white border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 font-bold" />
+                                                          <input type="color" value={cat.collabBackgroundColor || "#0f172a"} onChange={(e) => {
                                                              const newCats = [...categories];
                                                              const idx = newCats.findIndex(c => c.id === cat.id);
-                                                             newCats[idx].imageLabel2 = e.target.value;
+                                                             newCats[idx].collabBackgroundColor = e.target.value;
                                                              setCategories(newCats);
-                                                          }} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400" placeholder="Grid Label 2 (e.g. Experience)" />
-                                                       </div>
-                                                       <div className="space-y-4">
-                                                          <ImageUpload label="Hero Grid Image 3" value={cat.imageUrl3 || ""} onChange={(v) => {
-                                                             const newCats = [...categories];
-                                                             const idx = newCats.findIndex(c => c.id === cat.id);
-                                                             newCats[idx].imageUrl3 = v;
-                                                             setCategories(newCats);
-                                                          }} />
-                                                          <input type="text" value={cat.imageLabel3 || ""} onChange={(e) => {
-                                                             const newCats = [...categories];
-                                                             const idx = newCats.findIndex(c => c.id === cat.id);
-                                                             newCats[idx].imageLabel3 = e.target.value;
-                                                             setCategories(newCats);
-                                                          }} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400" placeholder="Grid Label 3 (e.g. Technical)" />
+                                                          }} className="absolute left-3 top-1/2 -translate-y-1/2 w-7 h-7 opacity-0 cursor-pointer z-10" />
+                                                          <div className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded border border-slate-200 pointer-events-none" style={{backgroundColor: cat.collabBackgroundColor || "#0f172a"}}></div>
                                                        </div>
                                                     </div>
-                                                 </div>
-                                                <div className="grid grid-cols-2 gap-4">
-                                                   <div>
-                                                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 px-1">Primary Button Text</label>
-                                                      <input type="text" value={cat.ctaText || ""} onChange={(e) => {
-                                                         const newCats = [...categories];
-                                                         const idx = newCats.findIndex(c => c.id === cat.id);
-                                                         newCats[idx].ctaText = e.target.value;
-                                                         setCategories(newCats);
-                                                      }} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 font-bold" />
-                                                   </div>
-                                                   <div>
-                                                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 px-1">Primary Button Link</label>
-                                                      <input type="text" value={cat.ctaLink || ""} onChange={(e) => {
-                                                         const newCats = [...categories];
-                                                         const idx = newCats.findIndex(c => c.id === cat.id);
-                                                         newCats[idx].ctaLink = e.target.value;
-                                                         setCategories(newCats);
-                                                      }} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 font-bold" />
-                                                   </div>
-                                                </div>
-                                                <div className="grid grid-cols-2 gap-4">
-                                                   <div>
-                                                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 px-1">Secondary Button Text</label>
-                                                      <input type="text" value={cat.cta2Text || ""} onChange={(e) => {
-                                                         const newCats = [...categories];
-                                                         const idx = newCats.findIndex(c => c.id === cat.id);
-                                                         newCats[idx].cta2Text = e.target.value;
-                                                         setCategories(newCats);
-                                                      }} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 font-bold" />
-                                                   </div>
-                                                   <div>
-                                                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 px-1">Secondary Button Link</label>
-                                                      <input type="text" value={cat.cta2Link || ""} onChange={(e) => {
-                                                         const newCats = [...categories];
-                                                         const idx = newCats.findIndex(c => c.id === cat.id);
-                                                         newCats[idx].cta2Link = e.target.value;
-                                                         setCategories(newCats);
-                                                      }} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 font-bold" />
-                                                   </div>
-                                                </div>
+                                                    <div>
+                                                       <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 px-1">Collab Text Color</label>
+                                                       <div className="relative">
+                                                          <input type="text" value={cat.collabTextColor || "#ffffff"} onChange={(e) => {
+                                                             const newCats = [...categories];
+                                                             const idx = newCats.findIndex(c => c.id === cat.id);
+                                                             newCats[idx].collabTextColor = e.target.value;
+                                                             setCategories(newCats);
+                                                          }} className="w-full bg-white border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 font-bold" />
+                                                          <input type="color" value={cat.collabTextColor || "#ffffff"} onChange={(e) => {
+                                                             const newCats = [...categories];
+                                                             const idx = newCats.findIndex(c => c.id === cat.id);
+                                                             newCats[idx].collabTextColor = e.target.value;
+                                                             setCategories(newCats);
+                                                          }} className="absolute left-3 top-1/2 -translate-y-1/2 w-7 h-7 opacity-0 cursor-pointer z-10" />
+                                                          <div className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded border border-slate-200 pointer-events-none" style={{backgroundColor: cat.collabTextColor || "#ffffff"}}></div>
+                                                       </div>
+                                                    </div>
+                                                  </div>
+                                                  <div className="grid grid-cols-2 gap-4">
+                                                     <Field label="Button Text" name="collabCtaText" value={cat.collabCtaText || ""} onChange={(e) => {
+                                                        const newCats = [...categories];
+                                                        const idx = newCats.findIndex(c => c.id === cat.id);
+                                                        newCats[idx].collabCtaText = e.target.value;
+                                                        setCategories(newCats);
+                                                     }} />
+                                                     <Field label="Button Link" name="collabCtaLink" value={cat.collabCtaLink || ""} onChange={(e) => {
+                                                        const newCats = [...categories];
+                                                        const idx = newCats.findIndex(c => c.id === cat.id);
+                                                        newCats[idx].collabCtaLink = e.target.value;
+                                                        setCategories(newCats);
+                                                     }} />
+                                                  </div>
+                                               </div>
+                                               )}
+
+                                               <div className="grid grid-cols-2 gap-4">
+                                                  <div>
+                                                     <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 px-1">Primary Button Text</label>
+                                                     <input type="text" value={cat.ctaText || ""} onChange={(e) => {
+                                                        const newCats = [...categories];
+                                                        const idx = newCats.findIndex(c => c.id === cat.id);
+                                                        newCats[idx].ctaText = e.target.value;
+                                                        setCategories(newCats);
+                                                     }} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 font-bold" />
+                                                  </div>
+                                                  <div>
+                                                     <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 px-1">Primary Button Link</label>
+                                                     <input type="text" value={cat.ctaLink || ""} onChange={(e) => {
+                                                        const newCats = [...categories];
+                                                        const idx = newCats.findIndex(c => c.id === cat.id);
+                                                        newCats[idx].ctaLink = e.target.value;
+                                                        setCategories(newCats);
+                                                     }} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 font-bold" />
+                                                  </div>
+                                               </div>
+                                               <div className="grid grid-cols-2 gap-4">
+                                                  <div>
+                                                     <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 px-1">Secondary Button Text</label>
+                                                     <input type="text" value={cat.cta2Text || ""} onChange={(e) => {
+                                                        const newCats = [...categories];
+                                                        const idx = newCats.findIndex(c => c.id === cat.id);
+                                                        newCats[idx].cta2Text = e.target.value;
+                                                        setCategories(newCats);
+                                                     }} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 font-bold" />
+                                                  </div>
+                                                  <div>
+                                                     <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 px-1">Secondary Button Link</label>
+                                                     <input type="text" value={cat.cta2Link || ""} onChange={(e) => {
+                                                        const newCats = [...categories];
+                                                        const idx = newCats.findIndex(c => c.id === cat.id);
+                                                        newCats[idx].cta2Link = e.target.value;
+                                                        setCategories(newCats);
+                                                     }} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 font-bold" />
+                                                  </div>
+                                               </div>
                                                <button onClick={async () => {
                                                   const res = await fetch(`/api/admin/categories/${cat.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cat) });
                                                   if (res.ok) showToast("Branding updated successfully!"); else showToast("Save failed", "error");
@@ -1146,6 +1236,18 @@ export default function AdminDashboard() {
                                           const data: any = hero || { page: slug, title: `Welcome to ${page?.label}`, subtitle: "Expert infrastructure.", textColor: "#ffffff", overlayOpacity: 0.4 };
                                           return (
                                              <div className="space-y-4">
+                                                <div className="grid grid-cols-2 gap-4">
+                                                   <ImageUpload label="Page Header Logo (Override)" value={data.logoUrl || ""} onChange={(v) => {
+                                                       const newHeroes = [...heroes];
+                                                       const idx = newHeroes.findIndex(h => h.id === data.id);
+                                                       if (idx !== -1) {
+                                                           newHeroes[idx].logoUrl = v;
+                                                           setHeroes(newHeroes);
+                                                       } else {
+                                                           data.logoUrl = v;
+                                                       }
+                                                   }} />
+                                                </div>
                                                 <Field label="Main Headline" name="title" value={data.title} onChange={(e) => {
                                                    const newHeroes = [...heroes];
                                                    const idx = newHeroes.findIndex(h => h.id === data.id);
@@ -1204,6 +1306,7 @@ export default function AdminDashboard() {
                                                       }
                                                    }} />
                                                 </div>
+
                                                 <button onClick={async () => {
                                                    const res = await fetch(data.id ? `/api/admin/hero/${data.id}` : "/api/admin/hero", { method: data.id ? "PUT" : "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
                                                    if (res.ok) {
@@ -2478,6 +2581,30 @@ export default function AdminDashboard() {
                   placeholder='[{"icon": "PenTool", "title": "Consultation", "desc": "Free expert analysis"}, {"icon": "Truck", "title": "Global Shipping", "desc": "Express delivery worldwide"}]'
                 />
                 <p className="text-[9px] text-slate-400 font-bold mt-1 px-1 uppercase tracking-tighter">* Must use double quotes for both keys and values.</p>
+              </div>
+            </div>
+
+            {/* SECTION: INNER PAGE ACTIONS & LABELS */}
+            <div className="bg-slate-50/50 p-5 rounded-3xl border border-slate-100 space-y-4">
+              <div className="flex items-center gap-2 text-slate-400 mb-2">
+                <Palette size={14} />
+                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Inner Page Customization</span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Field label="Main CTA Text (e.g. Get a Quote)" name="ctaText" value={formData.ctaText || "Get a Quote"} onChange={handleFormChange} />
+                <Field label="Main CTA Link" name="ctaLink" value={formData.ctaLink || "/get-a-quote"} onChange={handleFormChange} />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Field label="Brochure Label" name="brochureText" value={formData.brochureText || "Download Brochure"} onChange={handleFormChange} />
+                <Field label="Brochure Link" name="brochureLink" value={formData.brochureLink || "#"} onChange={handleFormChange} />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Field label="Warranty Text Override" name="warrantyText" value={formData.warrantyText || "10+ Year Warranty"} onChange={handleFormChange} />
+                <Field label="Standards Text Override" name="standardsText" value={formData.standardsText || "FIFA/FIBA Standards"} onChange={handleFormChange} />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Field label="Specs Section Title" name="specsTitle" value={formData.specsTitle || "DIMENSIONS & SPECS"} onChange={handleFormChange} />
+                <Field label="Why Invest Section Title" name="whyInvestTitle" value={formData.whyInvestTitle || "WHY INVEST IN"} onChange={handleFormChange} />
               </div>
             </div>
 

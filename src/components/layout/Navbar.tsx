@@ -84,7 +84,8 @@ export default function Navbar() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [settings, setSettings] = useState<any>(null);
   const [navLinks, setNavLinks] = useState<{ label: string; href: string }[]>([]);
-  const [categories, setCategories] = useState<{ id?: string; label: string; imageUrl?: string; icon?: string; iconSvg?: string; navbarIconUrl?: string; showOnNavbar?: boolean; href?: string }[]>([]);
+  const [heroes, setHeroes] = useState<any[]>([]);
+  const [categories, setCategories] = useState<{ id?: string; label: string; imageUrl?: string; icon?: string; iconSvg?: string; navbarIconUrl?: string; showOnNavbar?: boolean; href?: string; logoUrl?: string }[]>([]);
   const [tickerItems, setTickerItems] = useState<{ text: string }[]>([]);
   const pathname = usePathname();
 
@@ -93,9 +94,11 @@ export default function Navbar() {
       fetch("/api/admin/settings").then(res => res.ok ? res.json() : null),
       fetch("/api/admin/navigation").then(res => res.ok ? res.json() : []),
       fetch("/api/admin/categories").then(res => res.ok ? res.json() : []),
-      fetch("/api/admin/ticker").then(res => res.ok ? res.json() : [])
-    ]).then(([settingsData, navigationData, categoriesData, tickerData]) => {
+      fetch("/api/admin/ticker").then(res => res.ok ? res.json() : []),
+      fetch("/api/admin/hero").then(res => res.ok ? res.json() : [])
+    ]).then(([settingsData, navigationData, categoriesData, tickerData, heroesData]) => {
       setSettings(settingsData);
+      setHeroes(heroesData || []);
       setNavLinks(navigationData.length ? navigationData : [
         { label: "Projects", href: "/projects" },
         { label: "About Us", href: "/about" },
@@ -159,9 +162,28 @@ export default function Navbar() {
       {/* Logo + Search + Actions row */}
       <div className="border-b border-ag-border bg-white h-16 flex items-center shadow-sm">
         <div className="container-retail flex items-center gap-6 h-full">
-          {/* Logo */}
           <Link href="/" className="shrink-0 h-full group flex items-center w-auto max-w-[280px]">
-             <img src="/logo.png" alt="SportSurf" className="h-[85%] w-auto object-contain transition-transform duration-300 group-hover:scale-105" style={{ clipPath: 'inset(0 0 0 2px)' }} />
+             <img 
+               src={(() => {
+                 // First check if current category has a custom logo
+                 const currentCat = categories.find(c => {
+                   const slug = c.href || `/${c.label.toLowerCase().replace(/\s+/g, "-")}`;
+                   return pathname === slug;
+                 });
+                 if (currentCat?.logoUrl) return currentCat.logoUrl;
+
+                 // Then check if the general hero section for this page has a logo
+                 const pageSlug = pathname === "/" ? "home" : pathname.substring(1);
+                 const currentHero = heroes.find(h => h.page === pageSlug);
+                 if (currentHero?.logoUrl) return currentHero.logoUrl;
+
+                 // Fallback to global setting or default
+                 return settings?.logoUrl || "/logo.png";
+               })()} 
+               alt="SportSurf" 
+               className="h-[85%] w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
+               style={{ clipPath: 'inset(0 0 0 2px)' }} 
+             />
           </Link>
           
           {/* Search */}

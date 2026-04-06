@@ -15,7 +15,8 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       label, order, description, icon, iconSvg, navbarIconUrl, imageUrl, videoUrl, href,
       heroTag, ctaText, ctaLink, cta2Text, cta2Link, backgroundColor,
       imageUrl2, imageLabel2, imageUrl3, imageLabel3,
-      collabTitle, collabSubtitle, collabDescription, collabCtaText, collabCtaLink 
+      collabTitle, collabSubtitle, collabDescription, collabCtaText, collabCtaLink,
+      logoUrl, collabBackgroundColor, collabTextColor
     } = await req.json();
     const item = await prisma.category.update({
       where: { id: params.id },
@@ -43,7 +44,10 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
         collabSubtitle,
         collabDescription,
         collabCtaText,
-        collabCtaLink
+        collabCtaLink,
+        logoUrl,
+        collabBackgroundColor,
+        collabTextColor
       }
     });
     return NextResponse.json(item);

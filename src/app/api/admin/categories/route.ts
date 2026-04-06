@@ -29,7 +29,8 @@ export async function POST(req: Request) {
       label, order, description, icon, iconSvg, navbarIconUrl, imageUrl, href,
       backgroundColor, heroTag, ctaText, ctaLink, cta2Text, cta2Link,
       imageUrl2, imageLabel2, imageUrl3, imageLabel3,
-      collabTitle, collabSubtitle, collabDescription, collabCtaText, collabCtaLink 
+      collabTitle, collabSubtitle, collabDescription, collabCtaText, collabCtaLink,
+      logoUrl, collabBackgroundColor, collabTextColor
     } = await req.json();
     const item = await prisma.category.create({
       data: {
@@ -55,7 +56,10 @@ export async function POST(req: Request) {
         collabSubtitle,
         collabDescription,
         collabCtaText,
-        collabCtaLink
+        collabCtaLink,
+        logoUrl,
+        collabBackgroundColor,
+        collabTextColor
       }
     });
     return NextResponse.json(item);

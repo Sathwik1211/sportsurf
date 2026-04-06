@@ -12,10 +12,15 @@ const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, '-');
 
 // --- PROFESSIONAL MASTER HERO ARCHITECTURES ---
 
-const MasterSplitHero = ({ title, description, baseImage, sports, heroTag, ctaText, ctaLink, cta2Text, cta2Link, videoUrl, backgroundColor }: any) => {
+const MasterSplitHero = ({ title, description, baseImage, sports, heroTag, ctaText, ctaLink, cta2Text, cta2Link, videoUrl, backgroundColor, logoUrl }: any) => {
   return (
     <div className="mb-12 flex flex-col md:flex-row h-[350px] md:h-[380px] rounded-3xl overflow-hidden border border-ag-border shadow-sm bg-white">
        <div className="w-full md:w-[40%] p-8 flex flex-col justify-center" style={backgroundColor ? { backgroundColor } : { backgroundColor: '#fdfcf9' }}>
+          {logoUrl && (
+             <div className="w-16 h-16 mb-4 overflow-hidden rounded-xl bg-white/50 p-1 flex items-center justify-center border border-black/5 shadow-sm">
+                <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
+             </div>
+          )}
           <span className="text-ag-primary font-bold text-[8px] uppercase tracking-[0.4em] mb-3 block">{heroTag || 'Infrastructure'}</span>
           <h1 className="text-3xl md:text-5xl font-heading font-black text-ag-text uppercase tracking-tighter leading-none mb-4">{title}</h1>
           <p className="text-ag-text-muted text-[10px] font-body leading-relaxed max-w-xs">{description.substring(0, 100)}...</p>
@@ -44,7 +49,7 @@ const MasterSplitHero = ({ title, description, baseImage, sports, heroTag, ctaTe
   );
 };
 
-const MasterGalleryHero = ({ title, description, baseImage, heroTag, ctaText, ctaLink, cta2Text, cta2Link, videoUrl, backgroundColor }: any) => {
+const MasterGalleryHero = ({ title, description, baseImage, heroTag, ctaText, ctaLink, cta2Text, cta2Link, videoUrl, backgroundColor, logoUrl }: any) => {
   return (
     <div className="mb-12 relative h-[350px] md:h-[380px] rounded-3xl overflow-hidden shadow-md" style={backgroundColor ? { backgroundColor } : {}}>
        {videoUrl ? (
@@ -53,8 +58,13 @@ const MasterGalleryHero = ({ title, description, baseImage, heroTag, ctaText, ct
           <Image src={baseImage} fill className="object-cover" alt={title} priority />
        )}
        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-       <div className="absolute top-10 left-10 z-10">
-          <span className="text-ag-primary bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 text-[8px] font-black uppercase tracking-widest">{heroTag || 'Premium Collection'}</span>
+       <div className="absolute top-10 left-10 z-10 flex flex-col gap-4">
+          {logoUrl && (
+             <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-md p-2 flex items-center justify-center border border-white/20 shadow-lg scale-90 -translate-x-2">
+                <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
+             </div>
+          )}
+          <span className="text-ag-primary bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 text-[8px] font-black uppercase tracking-widest w-fit">{heroTag || 'Premium Collection'}</span>
        </div>
        <div className="absolute bottom-0 left-0 right-0 p-10 flex flex-col md:flex-row items-end justify-between gap-6">
           <div className="max-w-xl text-left">
@@ -76,10 +86,15 @@ const MasterGalleryHero = ({ title, description, baseImage, heroTag, ctaText, ct
   );
 };
 
-const MasterMinimalHero = ({ title, description, baseImage, sports, heroTag, ctaText, ctaLink, videoUrl, backgroundColor }: any) => {
+const MasterMinimalHero = ({ title, description, baseImage, sports, heroTag, ctaText, ctaLink, videoUrl, backgroundColor, logoUrl }: any) => {
   return (
     <div className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-3 h-[350px] md:h-[380px]">
        <div className="relative rounded-3xl overflow-hidden border border-ag-border flex flex-col justify-center items-center text-center p-8" style={backgroundColor ? { backgroundColor } : { backgroundColor: '#ffffff' }}>
+            {logoUrl && (
+               <div className="w-20 h-20 mb-6 flex items-center justify-center">
+                  <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
+               </div>
+            )}
             <span className="text-ag-primary font-bold text-[8px] uppercase tracking-widest mb-4">{heroTag || 'Bespoke Solutions'}</span>
             <div className="w-12 h-px bg-ag-primary mb-6" />
             <h1 className="text-4xl md:text-5xl font-heading font-black text-ag-text uppercase tracking-tighter leading-none mb-4">{title}</h1>
@@ -100,7 +115,7 @@ const MasterMinimalHero = ({ title, description, baseImage, sports, heroTag, cta
   );
 };
 
-const MasterAdventureHero = ({ title, description, baseImage, sports, heroTag, ctaText, ctaLink, videoUrl, backgroundColor, imageUrl2, imageLabel2, imageUrl3, imageLabel3 }: any) => {
+const MasterAdventureHero = ({ title, description, baseImage, sports, heroTag, ctaText, ctaLink, videoUrl, backgroundColor, imageUrl2, imageLabel2, imageUrl3, imageLabel3, logoUrl }: any) => {
   return (
     <div className="mb-12 grid grid-cols-1 md:grid-cols-12 gap-3 h-[350px] md:h-[380px]">
        <div className="md:col-span-8 relative rounded-3xl overflow-hidden border border-ag-border group" style={backgroundColor ? { backgroundColor } : {}}>
@@ -110,10 +125,13 @@ const MasterAdventureHero = ({ title, description, baseImage, sports, heroTag, c
              <Image src={baseImage} fill className="object-cover" alt={title} priority />
           )}
           <div className="absolute top-0 left-0 right-0 p-8 flex flex-col justify-start z-10">
-             <div className="bg-white/95 text-ag-text px-6 py-2 w-fit rounded-full flex items-center gap-4 border border-white/20 shadow-xl">
-                 <span className="text-[10px] font-black uppercase tracking-tighter">{title}</span>
-                 <div className="w-1.5 h-1.5 rounded-full bg-ag-primary animate-pulse" />
-                 <span className="text-[9px] font-bold text-ag-text-muted uppercase tracking-widest">Active Solutions</span>
+             <div className="bg-white/95 text-ag-text px-6 py-4 w-fit rounded-full flex items-center gap-4 border border-white/20 shadow-xl">
+                 {logoUrl && <img src={logoUrl} alt="Logo" className="w-10 h-10 object-contain" />}
+                 <div className="flex flex-col">
+                    <span className="text-[10px] font-black uppercase tracking-tighter leading-none">{title}</span>
+                    <span className="text-[7px] font-bold text-ag-text-muted uppercase tracking-widest mt-1">Active Solutions</span>
+                 </div>
+                 <div className="w-1.5 h-1.5 rounded-full bg-ag-primary animate-pulse ml-2" />
              </div>
           </div>
           <div className="absolute bottom-0 left-0 right-0 p-8">
@@ -137,16 +155,21 @@ const MasterAdventureHero = ({ title, description, baseImage, sports, heroTag, c
   );
 };
 
-const MasterRosterHero = ({ title, description, baseImage, sports, heroTag, videoUrl, backgroundColor }: any) => {
+const MasterRosterHero = ({ title, description, baseImage, sports, heroTag, videoUrl, backgroundColor, logoUrl }: any) => {
   return (
     <div className="mb-12 flex flex-col md:flex-row gap-3 h-[350px] md:h-[380px]">
        <div className="flex-1 relative rounded-3xl overflow-hidden border border-ag-border text-white p-10 flex flex-col justify-end" style={backgroundColor ? { backgroundColor } : { backgroundColor: '#0f172a' }}>
           {videoUrl && <video src={videoUrl} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover opacity-60" />}
-          <div className="absolute top-0 right-0 p-10 z-10">
+          <div className="absolute top-0 right-0 p-10 z-10 flex flex-col items-end gap-6">
+             {logoUrl && (
+                <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-2xl p-2 border border-white/20 flex items-center justify-center">
+                   <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
+                </div>
+             )}
              <div className="w-16 h-16 border-2 border-ag-primary rounded-full flex items-center justify-center text-ag-primary text-2xl font-black">2024</div>
           </div>
           <div className="relative z-10">
-             <span className="text-ag-primary font-bold text-[9px] uppercase tracking-[0.3em] mb-4 block">Elite Training Division</span>
+             <span className="text-ag-primary font-bold text-[9px] uppercase tracking-[0.3em] mb-4 block">{heroTag || 'Elite Training Division'}</span>
              <h1 className="text-4xl md:text-6xl font-heading font-black uppercase tracking-tighter leading-none mb-6 underline decoration-ag-primary decoration-4 underline-offset-8">{title}</h1>
              <p className="text-white/60 text-xs font-body max-w-sm">{description.substring(0, 100)}...</p>
           </div>
@@ -186,16 +209,16 @@ const CollabBlocks = ({ category, collaborations = [] }: { category: any; collab
         </h3>
         
         {/* Partnership Card */}
-        <div className="relative group overflow-hidden rounded-2xl bg-ag-text p-7 text-left">
+        <div className="relative group overflow-hidden rounded-2xl p-7 text-left transition-all" style={{ backgroundColor: category?.collabBackgroundColor || '#0f172a' }}>
             <div className="absolute top-0 right-0 p-4 opacity-10">
-                <Handshake size={56} className="text-white" />
+                <Handshake size={56} style={{ color: category?.collabTextColor || '#ffffff' }} />
             </div>
             <div className="relative z-10">
                 <span className="text-ag-gold text-[10px] font-black uppercase tracking-[0.2em] mb-3 block">{category?.collabTitle || 'Partner With Us'}</span>
-                <h4 className="text-white text-xl font-heading font-black uppercase tracking-tighter leading-none mb-4 whitespace-pre-line">
+                <h4 className="font-heading font-black uppercase tracking-tighter leading-none mb-4 whitespace-pre-line" style={{ color: category?.collabTextColor || '#ffffff' }}>
                     {category?.collabSubtitle || 'Join the SportSurf \n Elite Network'}
                 </h4>
-                <p className="text-white/50 text-[11px] font-body mb-5 leading-relaxed max-w-[200px]">
+                <p className="text-[11px] font-body mb-5 leading-relaxed max-w-[200px]" style={{ color: (category?.collabTextColor || '#ffffff') + '80' }}>
                     {category?.collabDescription || 'We are looking for strategic partners in infrastructure and technology.'}
                 </p>
                 <Link href={category?.collabCtaLink || '/contact'} className="inline-flex items-center gap-2 bg-ag-gold text-white px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-ag-text transition-all">
@@ -338,8 +361,13 @@ function CategoryContent() {
       );
   }
 
-  // Determine which hero layout to use based on the vertical
-  const heroStyle = ['surface-sports', 'water-sports'].includes(categorySlug) ? 'split' : 
+  // Determine which hero layout to use
+  // Priority 1: If 3 images are provided, use adventure (3-image) layout
+  // Priority 2: Use hardcoded defaults based on category slug
+  const hasMultipleImages = currentCategory?.imageUrl2 && currentCategory?.imageUrl3;
+  
+  const heroStyle = hasMultipleImages ? 'adventure' : 
+                    ['surface-sports', 'water-sports'].includes(categorySlug) ? 'split' : 
                     ['small-sports', 'budget-sports'].includes(categorySlug) ? 'gallery' :
                     ['sports-academies'].includes(categorySlug) ? 'minimal' :
                     ['play-zones', 'adventure-sports-games'].includes(categorySlug) ? 'adventure' : 'roster';
@@ -377,6 +405,7 @@ function CategoryContent() {
             cta2Link={currentCategory?.cta2Link}
             videoUrl={currentCategory?.videoUrl}
             backgroundColor={currentCategory?.backgroundColor}
+            logoUrl={currentCategory?.logoUrl}
           />
         )}
         {heroStyle === 'gallery' && (
@@ -391,6 +420,7 @@ function CategoryContent() {
             cta2Link={currentCategory?.cta2Link}
             videoUrl={currentCategory?.videoUrl}
             backgroundColor={currentCategory?.backgroundColor}
+            logoUrl={currentCategory?.logoUrl}
           />
         )}
         {heroStyle === 'minimal' && (
@@ -404,6 +434,7 @@ function CategoryContent() {
             ctaLink={currentCategory?.ctaLink}
             videoUrl={currentCategory?.videoUrl}
             backgroundColor={currentCategory?.backgroundColor}
+            logoUrl={currentCategory?.logoUrl}
           />
         )}
         {heroStyle === 'adventure' && (
@@ -419,6 +450,7 @@ function CategoryContent() {
             imageLabel2={currentCategory?.imageLabel2}
             imageUrl3={currentCategory?.imageUrl3}
             imageLabel3={currentCategory?.imageLabel3}
+            logoUrl={currentCategory?.logoUrl}
           />
         )}
         {heroStyle === 'roster' && (
@@ -430,6 +462,7 @@ function CategoryContent() {
             heroTag={currentCategory?.heroTag}
             videoUrl={currentCategory?.videoUrl}
             backgroundColor={currentCategory?.backgroundColor}
+            logoUrl={currentCategory?.logoUrl}
           />
         )}
 

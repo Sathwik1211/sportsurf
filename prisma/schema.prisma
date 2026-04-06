@@ -114,6 +114,9 @@ model Category {
   imageLabel2       String?         @default("Experience")
   imageUrl3         String?         @default("https://images.unsplash.com/photo-1504450758481-7338eba7524a?auto=format&fit=crop&q=80&w=400")
   imageLabel3       String?         @default("Technical")
+  logoUrl           String?
+  collabBackgroundColor String?     @default("#0f172a")
+  collabTextColor       String?     @default("#ffffff")
   collaborations    Collaboration[]
   subCategories     SubCategory[]
 }
@@ -177,6 +180,7 @@ model HeroSection {
   heroTag         String? @default("Information")
   videoUrl        String?
   backgroundColor String? @default("#0f172a")
+  logoUrl         String?
 }
 
 model Product {
@@ -201,6 +205,16 @@ model Product {
   whyInvestJson       String?
   subCategoryId       String?
   subCategory         SubCategory? @relation(fields: [subCategoryId], references: [id])
+  
+  // New Inner Page Customization Fields
+  ctaText             String?      @default("Get a Quote")
+  ctaLink             String?      @default("/get-a-quote")
+  brochureText        String?      @default("Download Brochure")
+  brochureLink        String?      @default("#")
+  warrantyText        String?      @default("10+ Year Warranty")
+  standardsText       String?      @default("FIFA/FIBA Standards")
+  specsTitle          String?      @default("DIMENSIONS & SPECS")
+  whyInvestTitle      String?      @default("WHY INVEST IN")
 }
 
 model Project {

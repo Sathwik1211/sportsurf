@@ -112,18 +112,28 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
    }
 
    return (
-      <div className="pt-12     bg-ag-bg min-h-screen  pb-0">
-
-         {/* Breadcrumb */}
+      <div className="pt-12 bg-ag-bg min-h-screen pb-0">
+         
+         {/* Top Back Action & Breadcrumb */}
          <div className="container-retail mb-8">
-            <div className="flex items-center gap-2 text-xs font-body text-ag-text-muted tracking-wider uppercase">
-               <Link href="/" className="hover:text-ag-primary transition-colors">Home</Link>
-               <LucideIcons.ChevronRight size={12} />
-               <Link href="/products" className="hover:text-ag-primary transition-colors">Products</Link>
-               <LucideIcons.ChevronRight size={12} />
-               <Link href={`/products?category=${product.category}`} className="hover:text-ag-primary transition-colors capitalize">{product.category.replace('-', ' ')}</Link>
-               <LucideIcons.ChevronRight size={12} />
-               <span className="text-ag-primary font-semibold truncate max-w-[200px]">{product.name}</span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+               <div className="flex items-center gap-2 text-xs font-body text-ag-text-muted tracking-wider uppercase">
+                  <Link href="/" className="hover:text-ag-primary transition-colors">Home</Link>
+                  <LucideIcons.ChevronRight size={12} />
+                  <Link href="/products" className="hover:text-ag-primary transition-colors">Products</Link>
+                  <LucideIcons.ChevronRight size={12} />
+                  <Link href={`/products?category=${product.category}`} className="hover:text-ag-primary transition-colors capitalize">{product.category.replace('-', ' ')}</Link>
+                  <LucideIcons.ChevronRight size={12} />
+                  <span className="text-ag-primary font-semibold truncate max-w-[200px]">{product.name}</span>
+               </div>
+               
+               <Link 
+                  href="/products" 
+                  className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-ag-primary transition-colors group"
+               >
+                  <LucideIcons.MoveLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> 
+                  Back to Products
+               </Link>
             </div>
          </div>
 
@@ -146,27 +156,33 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
                   </h1>
 
                   <p className="text-ag-text-muted text-lg font-body leading-relaxed mb-8 max-w-xl">
-                     {product.description} Engineered for professional athletes and commercial facilities requiring ultra-high durability and safety compliance.
+                     {product.description}
                   </p>
 
                   <div className="flex flex-wrap gap-4 mb-10">
                      <div className="flex items-center gap-2 bg-white px-4 py-2.5 rounded-lg border border-ag-border shadow-sm">
                         <LucideIcons.ShieldCheck className="text-ag-primary" size={20} />
-                        <span className="text-sm font-bold text-ag-text">10+ Year Warranty</span>
+                        <span className="text-sm font-bold text-ag-text">{product.warrantyText || "10+ Year Warranty"}</span>
                      </div>
                      <div className="flex items-center gap-2 bg-white px-4 py-2.5 rounded-lg border border-ag-border shadow-sm">
                         <LucideIcons.Award className="text-ag-primary" size={20} />
-                        <span className="text-sm font-bold text-ag-text">FIFA/FIBA Standards</span>
+                        <span className="text-sm font-bold text-ag-text">{product.standardsText || "FIFA/FIBA Standards"}</span>
                      </div>
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-4 max-w-md">
-                     <a href="#services" className="btn btn-primary flex-1 py-4 text-base shadow-xl shadow-ag-primary/20 justify-center">
-                        Request Project Estimate <LucideIcons.ArrowRight size={18} className="ml-2" />
-                     </a>
-                     <button className="btn btn-outline flex-1 py-4 text-base justify-center">
-                        Download Brochure
-                     </button>
+                     <Link 
+                        href={product.ctaLink || "/get-a-quote"} 
+                        className="btn btn-primary flex-1 py-4 text-base shadow-xl shadow-ag-primary/20 justify-center"
+                     >
+                        {product.ctaText || "Get a Quote"} <LucideIcons.ArrowRight size={18} className="ml-2" />
+                     </Link>
+                     <Link 
+                        href={product.brochureLink || "#"} 
+                        className="btn btn-outline flex-1 py-4 text-base justify-center"
+                     >
+                        {product.brochureText || "Download Brochure"}
+                     </Link>
                   </div>
                </div>
             </div>
@@ -180,7 +196,7 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
                   {/* Why Invest */}
                   <div className="lg:col-span-7">
                      <h2 className="text-3xl font-heading font-black text-ag-text mb-10 uppercase tracking-tighter">
-                        Why Invest in <span className="text-ag-primary">{product.name}</span>
+                        {product.whyInvestTitle || "WHY INVEST IN"} <span className="text-ag-primary">{product.name}</span>
                      </h2>
 
                      <div className="space-y-8">
@@ -205,7 +221,7 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
 
                      <div className="bg-ag-bg-alt rounded-2xl p-8 border border-ag-border">
                         <h3 className="text-2xl font-heading font-black text-ag-text mb-6 uppercase tracking-tighter flex items-center gap-3">
-                           <LucideIcons.Ruler className="text-ag-primary" /> Dimensions & Specs
+                           <LucideIcons.Ruler className="text-ag-primary" /> {product.specsTitle || "DIMENSIONS & SPECS"}
                         </h3>
                         <div className="space-y-0 border border-ag-border/60 rounded-xl overflow-hidden bg-white">
                            {specs.length > 0 ? specs.map((spec, index) => (
