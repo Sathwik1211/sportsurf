@@ -14,7 +14,7 @@ const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, '-');
 
 const MasterSplitHero = ({ title, description, baseImage, sports, heroTag, ctaText, ctaLink, cta2Text, cta2Link, videoUrl, backgroundColor }: any) => {
   return (
-    <div className="mb-12 flex flex-col md:flex-row h-[350px] md:h-[380px] rounded-3xl overflow-hidden border border-ag-border shadow-sm bg-white">
+    <div className="pt-12  mb-12 flex flex-col md:flex-row h-[350px] md:h-[380px] rounded-3xl overflow-hidden border border-ag-border shadow-sm bg-white">
        <div className="w-full md:w-[40%] p-8 flex flex-col justify-center" style={backgroundColor ? { backgroundColor } : { backgroundColor: '#fdfcf9' }}>
           <span className="text-ag-primary font-bold text-[8px] uppercase tracking-[0.4em] mb-3 block">{heroTag || 'Infrastructure'}</span>
           <h1 className="text-3xl md:text-5xl font-heading font-black text-ag-text uppercase tracking-tighter leading-none mb-4">{title}</h1>
@@ -46,7 +46,7 @@ const MasterSplitHero = ({ title, description, baseImage, sports, heroTag, ctaTe
 
 const MasterGalleryHero = ({ title, description, baseImage, heroTag, ctaText, ctaLink, cta2Text, cta2Link, videoUrl, backgroundColor }: any) => {
   return (
-    <div className="mb-12 relative h-[350px] md:h-[380px] rounded-3xl overflow-hidden shadow-md" style={backgroundColor ? { backgroundColor } : {}}>
+    <div className="pt-12 mb-12 relative h-[350px] md:h-[380px] rounded-3xl overflow-hidden shadow-md" style={backgroundColor ? { backgroundColor } : {}}>
        {videoUrl ? (
           <video src={videoUrl} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" />
        ) : (
@@ -78,7 +78,7 @@ const MasterGalleryHero = ({ title, description, baseImage, heroTag, ctaText, ct
 
 const MasterMinimalHero = ({ title, description, baseImage, sports, heroTag, ctaText, ctaLink, videoUrl, backgroundColor }: any) => {
   return (
-    <div className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-3 h-[350px] md:h-[380px]">
+    <div className="pt-12 mb-12 grid grid-cols-1 md:grid-cols-2 gap-3 h-[350px] md:h-[380px]">
        <div className="relative rounded-3xl overflow-hidden border border-ag-border flex flex-col justify-center items-center text-center p-8" style={backgroundColor ? { backgroundColor } : { backgroundColor: '#ffffff' }}>
             <span className="text-ag-primary font-bold text-[8px] uppercase tracking-widest mb-4">{heroTag || 'Bespoke Solutions'}</span>
             <div className="w-12 h-px bg-ag-primary mb-6" />
@@ -102,7 +102,7 @@ const MasterMinimalHero = ({ title, description, baseImage, sports, heroTag, cta
 
 const MasterAdventureHero = ({ title, description, baseImage, sports, heroTag, ctaText, ctaLink, videoUrl, backgroundColor, imageUrl2, imageLabel2, imageUrl3, imageLabel3 }: any) => {
   return (
-    <div className="mb-12 grid grid-cols-1 md:grid-cols-12 gap-3 h-[350px] md:h-[380px]">
+    <div className="pt-12 mb-12 grid grid-cols-1 md:grid-cols-12 gap-3 h-[350px] md:h-[380px]">
        <div className="md:col-span-8 relative rounded-3xl overflow-hidden border border-ag-border group" style={backgroundColor ? { backgroundColor } : {}}>
           {videoUrl ? (
              <video src={videoUrl} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" />
@@ -139,7 +139,7 @@ const MasterAdventureHero = ({ title, description, baseImage, sports, heroTag, c
 
 const MasterRosterHero = ({ title, description, baseImage, sports, heroTag, videoUrl, backgroundColor }: any) => {
   return (
-    <div className="mb-12 flex flex-col md:flex-row gap-3 h-[350px] md:h-[380px]">
+    <div className="pt-12 mb-12 flex flex-col md:flex-row gap-3 h-[350px] md:h-[380px]">
        <div className="flex-1 relative rounded-3xl overflow-hidden border border-ag-border text-white p-10 flex flex-col justify-end" style={backgroundColor ? { backgroundColor } : { backgroundColor: '#0f172a' }}>
           {videoUrl && <video src={videoUrl} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover opacity-60" />}
           <div className="absolute top-0 right-0 p-10 z-10">
@@ -179,7 +179,7 @@ const CollabBlocks = ({ category, collaborations = [] }: { category: any; collab
   }, [collaborations, category]);
 
   return (
-    <div className="space-y-8 pt-8 border-t border-ag-border/50">
+    <div className="pt-12 space-y-8 border-t border-ag-border/50">
       <div className="space-y-6">
         <h3 className="font-heading font-bold text-xs uppercase tracking-[0.3em] text-ag-primary flex items-center gap-3">
            <div className="w-2 h-0.5 bg-ag-gold" /> {category?.collabTitle || 'Collaborations'}
@@ -325,7 +325,7 @@ function CategoryContent() {
 
   if (loading) {
     return (
-      <div className="pt-20 min-h-screen bg-ag-bg flex items-center justify-center">
+      <div className="pt-12  min-h-screen bg-ag-bg flex items-center justify-center">
         <div className="w-12 h-12 rounded-full border-4 border-ag-primary border-t-transparent animate-spin"></div>
       </div>
     );
@@ -333,7 +333,7 @@ function CategoryContent() {
 
   if (allCategories.length > 0 && !currentCategory && !['surface-sports', 'water-sports', 'small-sports', 'budget-sports', 'sports-academies', 'play-zones', 'adventure-sports-games', 'challenge-courses', 'talent-scout-clubs'].includes(categorySlug)) {
       return (
-        <div className="pt-32 pb-32 text-center bg-ag-bg min-h-[60vh] flex flex-col items-center justify-center">
+        <div className="pt-12  pb-32 text-center bg-ag-bg min-h-[60vh] flex flex-col items-center justify-center">
             <h2 className="text-4xl font-heading font-black text-ag-text mb-4 uppercase">Page Not Found</h2>
             <p className="text-ag-text-muted mb-8">This inner page does not exist yet.</p>
             <Link href="/" className="btn btn-primary px-8 py-3">Return Home</Link>
@@ -351,7 +351,7 @@ function CategoryContent() {
   const description = currentCategory?.description || `Premium infrastructure and expert services for ${currentCategoryLabel.toLowerCase()}. Engineered for high-performance athletic environments and professional safety standards.`;
 
   return (
-    <div className="pt-8 min-h-screen bg-ag-bg pb-24">
+    <div className="pt-12  min-h-screen bg-ag-bg pb-24">
       <div className="container-retail">
         {/* Breadcrumb - Global across all heroes */}
         <div className="flex items-center gap-2 text-[10px] font-body text-ag-text-muted mb-6 tracking-[0.2em] uppercase">

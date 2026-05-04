@@ -42,7 +42,7 @@ export default async function AboutPage() {
    }
 
    return (
-     <div className="pt-12      bg-ag-bg min-h-screen  pb-32 overflow-hidden">
+     <div className="pt-12         bg-ag-bg min-h-screen  pb-32 overflow-hidden">
        <Section className="mb-32">
          <div className="container mx-auto px-6">
            <div className="max-w-4xl mx-auto text-center space-y-6">

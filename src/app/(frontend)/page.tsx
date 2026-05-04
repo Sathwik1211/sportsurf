@@ -46,7 +46,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="pt-0     bg-ag-bg min-h-screen">
+    <div className="pt-0       bg-ag-bg min-h-screen">
       <Hero hero={hero} />
       <FeaturedProductsGrid categories={categories} />
       <StatsCounter settings={settings} />

@@ -37,7 +37,7 @@ export default function ProfilePage() {
 
   if (status === "loading" || (status === "authenticated" && loadingActivity)) {
     return (
-      <div className="pt-12 min-h-screen bg-ag-bg flex items-center justify-center ">
+      <div className="pt-12   min-h-screen bg-ag-bg flex items-center justify-center ">
         <div className="w-8 h-8 rounded-full border-2 border-ag-primary border-t-transparent animate-spin"></div>
       </div>
     );
@@ -53,7 +53,7 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="pt-12 bg-ag-bg min-h-screen pb-20">
+    <div className="pt-12  bg-ag-bg min-h-screen pb-20">
       <div className="container-retail">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col md:flex-row items-center gap-8 mb-16">

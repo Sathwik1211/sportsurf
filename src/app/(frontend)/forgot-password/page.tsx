@@ -37,7 +37,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="pt-12 bg-ag-bg min-h-screen pb-32">
+    <div className="pt-12   bg-ag-bg min-h-screen pb-32">
       <div className="container-retail">
         <div className="max-w-md mx-auto">
           {!isSubmitted ? (

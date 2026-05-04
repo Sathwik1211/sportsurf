@@ -18,14 +18,14 @@ export default function ProjectsPage() {
 
   if (loading) {
     return (
-      <div className="pt-12      min-h-screen bg-ag-bg flex items-center justify-center ">
+      <div className="pt-12         min-h-screen bg-ag-bg flex items-center justify-center ">
         <div className="w-8 h-8 rounded-full border-2 border-ag-primary border-t-transparent animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="pt-12   bg-ag-bg min-h-screen pb-20"> {/* Removed  as global layout handle this */}
+    <div className="pt-12    bg-ag-bg min-h-screen pb-20"> {/* Removed  as global layout handle this */}
       <div className="container-retail space-y-16">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-2">

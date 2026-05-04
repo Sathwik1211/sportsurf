@@ -54,7 +54,7 @@ function ResetPasswordForm() {
 
   if (!token) {
     return (
-      <div className="text-center space-y-6 py-12">
+      <div className="pt-12  text-center space-y-6 py-12">
         <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center text-red-500 mx-auto">
           <AlertCircle size={40} />
         </div>
@@ -71,7 +71,7 @@ function ResetPasswordForm() {
 
   if (success) {
     return (
-      <div className="text-center space-y-6 py-12">
+      <div className="pt-12 text-center space-y-6 py-12">
         <div className="w-20 h-20 bg-ag-primary/10 rounded-full flex items-center justify-center text-ag-primary mx-auto">
           <CheckCircle2 size={40} />
         </div>
@@ -84,7 +84,7 @@ function ResetPasswordForm() {
   }
 
   return (
-    <div className="space-y-10">
+    <div className="pt-12 space-y-10">
       <div className="text-center">
         <div className="w-16 h-16 bg-ag-primary/5 border border-ag-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
           <KeyRound size={28} className="text-ag-primary" />
@@ -153,7 +153,7 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="pt-12 bg-ag-bg min-h-screen pb-32">
+    <div className="pt-12  bg-ag-bg min-h-screen pb-32">
       <div className="container-retail">
         <div className="max-w-md mx-auto">
           <Suspense fallback={<div className="text-center py-20 text-ag-text-muted">Loading...</div>}>

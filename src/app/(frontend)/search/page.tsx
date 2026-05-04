@@ -38,7 +38,7 @@ export default async function SearchResultsPage({ searchParams }: { searchParams
   const totalResults = products.length + projects.length;
 
   return (
-    <div className="pt-12 bg-ag-bg min-h-screen pb-32">
+    <div className="pt-12   bg-ag-bg min-h-screen pb-32">
       <div className="container-retail">
         <div className="mb-12">
           <span className="text-ag-primary font-extrabold text-[11px] uppercase tracking-widest">Search Inventory</span>

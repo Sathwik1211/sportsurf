@@ -39,7 +39,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="pt-12     bg-ag-bg min-h-screen  pb-32"> {/* Reduced pt from 64 to 32 */}
+    <div className="pt-12       bg-ag-bg min-h-screen  pb-32"> {/* Reduced pt from 64 to 32 */}
       <div className="container-retail">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-10">

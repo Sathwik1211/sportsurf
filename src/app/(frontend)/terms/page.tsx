@@ -4,7 +4,7 @@ import { FileText, Gavel, AlertCircle, CheckCircle2 } from "lucide-react";
 
 export default function TermsPage() {
   return (
-    <div className="pt-12     bg-ag-bg min-h-screen  pb-32">
+    <div className="pt-12       bg-ag-bg min-h-screen  pb-32">
       <div className="container-retail">
         <div className="max-w-4xl mx-auto">
           <div className="mb-16">

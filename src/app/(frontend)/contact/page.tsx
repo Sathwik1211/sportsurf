@@ -15,7 +15,7 @@ export default async function ContactPage() {
   };
 
   return (
-    <div className="pt-12      bg-ag-bg min-h-screen  pb-32">
+    <div className="pt-12         bg-ag-bg min-h-screen  pb-32">
       <div className="container-retail">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
             <div className="space-y-2">

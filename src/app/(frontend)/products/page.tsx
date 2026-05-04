@@ -71,14 +71,14 @@ function ProductsContent() {
 
   if (loading) {
     return (
-      <div className="pt-12      min-h-screen bg-ag-bg flex items-center justify-center">
+      <div className="pt-12         min-h-screen bg-ag-bg flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-2 border-ag-primary border-t-transparent animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="pt-12   min-h-screen bg-ag-bg  pb-20">
+    <div className="pt-12    min-h-screen bg-ag-bg  pb-20">
       <div className="container-retail">
         {/* Breadcrumb / Top Bar */}
         <div className="mb-8">

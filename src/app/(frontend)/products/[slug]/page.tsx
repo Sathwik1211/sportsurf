@@ -114,7 +114,7 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
    }
 
    return (
-      <div className="pt-12 bg-ag-bg min-h-screen pb-0">
+      <div className="pt-12   bg-ag-bg min-h-screen pb-0">
          
          {/* Top Back Action & Breadcrumb */}
          <div className="container-retail mb-8">
